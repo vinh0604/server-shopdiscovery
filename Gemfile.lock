@@ -25,6 +25,10 @@ GEM
     activerecord-postgis-adapter (0.4.3)
       pg (>= 0.11.0)
       rgeo-activerecord (~> 0.4.5)
+    activerecord-postgres-hstore (0.4.1)
+      pg
+      rails
+      rake
     activeresource (3.2.1)
       activemodel (= 3.2.1)
       activesupport (= 3.2.1)
@@ -42,6 +46,9 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 1.0.0)
+    carrierwave (0.7.1)
+      activemodel (>= 3.2.0)
+      activesupport (>= 3.2.0)
     childprocess (0.3.6)
       ffi (~> 1.0, >= 1.0.6)
     coderay (1.0.8)
@@ -216,7 +223,9 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord-postgis-adapter
+  activerecord-postgres-hstore
   capybara
+  carrierwave
   coffee-rails (~> 3.2.1)
   devise
   grape
