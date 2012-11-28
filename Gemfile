@@ -24,4 +24,6 @@ group :development, :test do
   gem "capybara"
   gem 'rb-notifu'
   gem 'guard-spork'
+  gem 'wdm', '~> 0.0.3'
+  gem 'factory_girl_rails'
 end

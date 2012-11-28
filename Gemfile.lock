@@ -68,6 +68,11 @@ GEM
     erubis (2.7.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
+    factory_girl (4.1.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.1.0)
+      factory_girl (~> 4.1.0)
+      railties (>= 3.0.0)
     ffi (1.2.0-x86-mingw32)
     grape (0.2.2)
       activesupport
@@ -213,6 +218,7 @@ GEM
       backports (~> 2.6.1)
     warden (1.2.1)
       rack (>= 1.0)
+    wdm (0.0.3)
     websocket (1.0.4)
     win32console (1.3.2-x86-mingw32)
     xpath (1.0.0)
@@ -228,6 +234,7 @@ DEPENDENCIES
   carrierwave
   coffee-rails (~> 3.2.1)
   devise
+  factory_girl_rails
   grape
   guard-rspec
   guard-spork
@@ -240,3 +247,4 @@ DEPENDENCIES
   sass-rails (~> 3.2.3)
   squeel
   uglifier (>= 1.0.3)
+  wdm (~> 0.0.3)

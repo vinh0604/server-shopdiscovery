@@ -1,4 +1,5 @@
 ServerShopdiscovery::Application.routes.draw do
+  mount API::AppAPI => '/'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
