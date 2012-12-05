@@ -29,21 +29,33 @@ module API
           user.save
           user
         else
-          error!(user.errors, 400)
+          error!(user.errors.to_json(:methods => :full_messages), 400)
         end
       end
     end
 
     resource :profile do
+      desc "Get user's profile"
+      get '/' do
+        authenticate!
+        current_user.to_json(:include => :contact)
+      end
+
       desc "Update user's profile"
+      params do
+        requires :contact, :type => String, :desc => "Contact in JSON format"
+      end
       put '/' do
         authenticate!
         user = current_user
-        if params[:avatar]
-          user.avatar = params[:avatar]
-          user.save!
+        contact_params = JSON.parse params[:contact]
+        user.transaction do
+          if params[:avatar]
+            user.avatar = params[:avatar]
+            user.save!
+          end
+          user.contact.update_attributes(contact_params)
         end
-        user.contact.update_attributes(params[:contact])
         user.to_json(:include => :contact)
       end
     end
@@ -57,10 +69,15 @@ module API
       end
       put '/' do
         authenticate!
-        if current_user.update_with_password(params)
+        sub_params = {
+          :current_password => params[:current_password],
+          :password => params[:password],
+          :password_confirmation => params[:password_confirmation]
+        }
+        if current_user.update_with_password(sub_params)
           {success: true}
         else
-          error!(current_user.errors, 400)
+          error!(current_user.errors.to_json(:methods => :full_messages), 400)
         end
       end
     end

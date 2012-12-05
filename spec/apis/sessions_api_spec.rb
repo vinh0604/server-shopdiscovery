@@ -7,9 +7,9 @@ describe "Sessions" do
 
   describe "POST /api/v1/sessions/" do
     it "returns user if success" do
-      post '/api/v1/sessions/', {:email => @user.username, :password => '123456'}
+      post '/api/v1/sessions/', {:login => @user.username, :password => '123456'}
       response.status.should == 201
-      response.body.should == @user.to_json
+      response.body.should == @user.to_json(:methods => :authentication_token)
     end
   end
 

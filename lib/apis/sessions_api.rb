@@ -3,15 +3,15 @@ module API
     resource :sessions do
       desc "Login"
       params do
-        requires :email, :type => String, :desc => "Username or email"
+        requires :login, :type => String, :desc => "Username or email"
         requires :password, :type => String, :desc => "Password"
       end
       post '/' do
         user = User.find_for_database_authentication(:login => params[:login])
         if user and user.valid_password?(params[:password])
-          user
+          user.to_json(:methods => :authentication_token)
         else
-          error!('403 AuthenticationFailed', 403)
+          error!({message: '403 AuthenticationFailed'}.to_json, 403)
         end
       end
 

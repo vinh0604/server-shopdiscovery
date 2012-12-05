@@ -12,7 +12,7 @@ module API
       end
 
       def authenticate!
-        error!('401 Unauthorized', 401) unless current_user
+        error!({message: '401 Unauthorized'}.to_json, 401) unless current_user
       end
     end
 
