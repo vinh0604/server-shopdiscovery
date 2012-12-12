@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   belongs_to :contact
+  has_many :reviews, :foreign_key => 'reviewer_id'
 
   devise :database_authenticatable, :token_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable

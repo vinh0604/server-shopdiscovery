@@ -43,12 +43,12 @@ module API
 
       desc "Update user's profile"
       params do
-        requires :contact, :type => String, :desc => "Contact in JSON format"
+        optional :contact, :type => String, :desc => "Contact in JSON format"
       end
       put '/' do
         authenticate!
         user = current_user
-        contact_params = JSON.parse params[:contact]
+        contact_params = params[:contact].blank? ? {} : JSON.parse(params[:contact])
         user.transaction do
           if params[:avatar]
             user.avatar = params[:avatar]

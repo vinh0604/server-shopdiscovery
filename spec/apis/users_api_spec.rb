@@ -63,11 +63,9 @@ describe "Users" do
     end
 
     it "updates user's contact and returns status 200 with new user and contact data" do
-      contact_attributes = {
-        :first_name => 'Vinh1'
-      }
+      contact_attributes = {:first_name => 'Vinh1'}
 
-      put 'api/v1/profile/', {:auth_token => @user.authentication_token, :contact => contact_attributes}
+      put 'api/v1/profile/', {:auth_token => @user.authentication_token, :contact => contact_attributes.to_json}
       response.status.should == 200
       response_data = JSON.parse response.body
       response_data['contact']['first_name'].should == contact_attributes[:first_name]

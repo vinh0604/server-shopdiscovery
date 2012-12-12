@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121126161038) do
+ActiveRecord::Schema.define(:version => 20121210171036) do
 
   create_table "categories", :force => true do |t|
     t.integer  "parent_id"
@@ -100,6 +100,7 @@ ActiveRecord::Schema.define(:version => 20121126161038) do
     t.string   "image"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
+    t.integer  "ordinal"
   end
 
   create_table "products", :force => true do |t|
@@ -183,6 +184,7 @@ ActiveRecord::Schema.define(:version => 20121126161038) do
     t.datetime "created_at",                                           :null => false
     t.datetime "updated_at",                                           :null => false
     t.spatial  "location",       :limit => {:srid=>0, :type=>"point"}
+    t.string   "shop_key"
   end
 
   create_table "shops_tags", :force => true do |t|
@@ -218,6 +220,7 @@ ActiveRecord::Schema.define(:version => 20121126161038) do
     t.string   "authentication_token"
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
+    t.string   "identity"
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true

@@ -1,5 +1,16 @@
 require 'spec_helper'
 
 describe Photo do
-  pending "add some examples to (or delete) #{__FILE__}"
+  before(:each) do
+    @photo = Photo.new
+  end
+
+  it "has an imageable object" do
+    @photo.should respond_to :imageable
+  end
+
+  it "has an image" do
+    @photo.should respond_to :image
+    @photo.image.should respond_to :url
+  end
 end

@@ -3,10 +3,10 @@ namespace :crawler do
   task :vatgia => :environment do
     require 'nokogiri'
 
-    crawler = CobwebCrawler.new({:internal_urls => ["http://www.vatgia.com/ThanhLapStore&module=product&view=ucat&*",
-                                                    "http://www.vatgia.com/ThanhLapStore&module=product&view=listudv&*"]})
-    product_crawler = CobwebCrawler.new({:internal_urls => ["http://www.vatgia.com/ThanhLapStore&module=product&view=detail&*"]})
-    crawler.crawl('http://www.vatgia.com/ThanhLapStore') do |content|
+    crawler = CobwebCrawler.new({:internal_urls => ["http://www.vatgia.com/buynowstore&module=product&view=ucat&*",
+                                                    "http://www.vatgia.com/buynowstore&module=product&view=listudv&*"]})
+    product_crawler = CobwebCrawler.new({:internal_urls => ["http://www.vatgia.com/buynowstore&module=product&view=detail&*"]})
+    crawler.crawl('http://www.vatgia.com/buynowstore') do |content|
       puts "Processing #{content[:url]}..."
       product_crawler.crawl(content[:url]) do |product_content|
         if product_content[:url].include? "module=product&view=detail"
@@ -20,6 +20,7 @@ namespace :crawler do
           product[:condition] = product_detail_table.css('tr:nth-child(1) > td:nth-child(4)').first.text
           product[:warranty] = product_detail_table.css('tr:nth-child(2) > td:nth-child(2)').first.text.gsub(/[^0-9]/,'')
           product[:origin] = product_detail_table.css('tr:nth-child(2) > td:nth-child(4)').first.text
+          product[:photo] = doc.css('.picture_larger img').first.attr('src')
 
           specifics = {}
           doc.css('.product_technical_table .technical').each do |row|

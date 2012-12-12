@@ -1,6 +1,21 @@
 require_relative 'sessions_api'
 require_relative 'users_api'
+require_relative 'shops_api'
+require_relative 'shop_products_api'
+require_relative 'reviews_api'
+require 'rabl'
+
 module API
+  class RablPresenter
+    def self.represent(object, options)
+      render_options = {
+        :format => :json,
+        :view_path => Rails.root.join('app/views')
+      }
+      Rabl::Renderer.new(options[:source], object, render_options).render
+    end
+  end
+
   class AppAPI < Grape::API
     version 'v1'
     format :json
@@ -22,5 +37,8 @@ module API
 
     mount API::Sessions
     mount API::Users
+    mount API::Shops
+    mount API::ShopProducts
+    mount API::Reviews
   end
 end

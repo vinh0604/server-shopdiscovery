@@ -10,6 +10,7 @@ test: &TEST
   adapter: postgis
   encoding: utf8
   database: shopdiscovery_test
+  template: template_postgis_20
   pool: 5
   username: postgres
   password:

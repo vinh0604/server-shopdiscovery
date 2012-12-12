@@ -12,6 +12,12 @@ describe User do
     user.avatar.should respond_to :url
   end
 
+  it "has many reviews" do
+    user = User.new
+    user.should respond_to :reviews
+    user.reviews.should be_instance_of(Array)
+  end
+
   context "creation" do
     before(:each) do
       @user = FactoryGirl.create(:user)

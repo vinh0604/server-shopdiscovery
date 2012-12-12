@@ -1,5 +1,31 @@
 require 'spec_helper'
 
 describe Shop do
-  pending "add some examples to (or delete) #{__FILE__}"
+  before(:each) do
+    @shop = Shop.new
+  end
+
+  it "has a creator" do
+    @shop.should respond_to :creator
+  end
+
+  it "has many products" do
+    @shop.should respond_to :shop_products
+  end
+
+  it "has many photos" do
+    @shop.should respond_to :photos
+  end
+
+  it "can have many phone numbers" do
+    @shop.phones.should be_instance_of(Array)
+  end
+
+  it "has many tags" do
+    @shop.should respond_to :tags
+  end
+
+  it "has many reviews" do
+    @shop.should respond_to(:reviews)
+  end
 end
