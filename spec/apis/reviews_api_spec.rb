@@ -3,9 +3,10 @@ require 'spec_helper'
 describe "Reviews" do
   before(:each) do
     @shop = FactoryGirl.create(:shop)
+    @user = FactoryGirl.create(:user)
     @review = FactoryGirl.build(:review) do |r|
       r.reviewable = @shop
-      r.reviewer = FactoryGirl.create(:user)
+      r.reviewer = @user
     end
     @review.save
   end
@@ -32,8 +33,8 @@ describe "Reviews" do
       response.status.should == 200
       Rails.logger.debug response.body
       data = JSON.parse response.body
-      data.should have_key @review.rating.to_s
-      data[@review.rating.to_s].should == 1
+      data['star_count'].should have_key @review.rating.to_s
+      data['star_count'][@review.rating.to_s].should == 1
     end
 
     it "returns status 500 if the reviewable object not found" do
@@ -43,10 +44,34 @@ describe "Reviews" do
   end
 
   describe "POST /api/v1/reviews" do
-    it "must be authenticated"
+    before(:each) do
+      @shop_product = FactoryGirl.create(:shop_product)
+      @params = {
+        :reviewable_id => @shop_product.id,
+        :reviewable_type => 'shop_product',
+        :rating => 5,
+        :auth_token => @user.authentication_token
+      }
+    end
+    it "must have params[:rating], params[:reviewable_type], params[:reviewable_id]" do
+      post 'api/v1/reviews'
+      response.status.should == 400
+    end
 
-    it "must have params[:rating], params[:reviewable_type], params[:reviewable_id]"
+    it "must be authenticated" do
+      post 'api/v1/reviews', @params.reject{|k| k==:auth_token}
+      response.status.should == 401
+    end
 
-    it "returns status 201 if new review is created"
+    it "returns status 500 if reviewable not found" do
+      @params[:reviewable_id] = 0
+      post 'api/v1/reviews', @params
+      response.status.should == 500
+    end
+
+    it "returns status 201 if new review is created" do
+      post 'api/v1/reviews', @params
+      response.status.should == 201
+    end
   end
 end

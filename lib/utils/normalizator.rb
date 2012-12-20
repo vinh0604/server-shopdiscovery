@@ -22,7 +22,7 @@ module Normalizator
     {word: 'VGA', synonym: ['card màn hình', 'video card', 'vga', 'card đồ họa', 'vga card']},
     {word: 'Mainboard', synonym: ['mainboard', 'bo mạch chủ', 'motherboard']},
     {word: 'Máy in', synonym: ['máy in', 'máy in phun', 'máy in laser đen trắng', 'máy in all in one']},
-    {word: 'Máy scan', synonym: ['máy scan', 'bo mạch chủ', 'motherboard']},
+    {word: 'Máy scan', synonym: ['máy scan']},
     {word: 'Loa', synonym: ['loa', 'speaker']},
     {word: 'Headphone', synonym: ['headphone', 'tai nghe', 'head phone']},
     {word: 'Máy ảnh', synonym: ['máy ảnh', 'camera']},

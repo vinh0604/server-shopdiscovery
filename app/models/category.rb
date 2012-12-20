@@ -21,6 +21,15 @@ class Category < ActiveRecord::Base
     @ancestors
   end
 
+  def all_children
+    if has_children?
+      [id]
+    else
+      Category.where("? = ANY(regexp_split_to_array(sequence,','))", self.id.to_s).
+               all.map { |c| c.id }
+    end
+  end
+
   private
   def update_sequence
     if self.parent

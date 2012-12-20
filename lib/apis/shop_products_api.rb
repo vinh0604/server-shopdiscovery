@@ -29,6 +29,26 @@ module API
         @shop_product = ShopProduct.find(params[:id])
         present @shop_product, :with => API::RablPresenter, :source => 'api/shop_product'
       end
+
+      desc "Wish list"
+      segment '/:shop_product_id' do
+        resource '/wishlist' do
+          desc "Check if shop product is in wish list"
+          get '/' do
+            
+          end
+
+          desc "Add shop product to wish list"
+          post '/' do
+            
+          end
+
+          desc "Remove shop product from wish list"
+          delete '/' do
+            
+          end
+        end
+      end
     end
   end
 end

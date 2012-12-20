@@ -15,4 +15,10 @@ describe Review do
   it "belongs to a reviewable object" do
     @review.should respond_to(:reviewable)
   end
+
+  it "re-calculates review statistic of reviewable object after save" do
+    reviewable_object = @review.reviewable
+    reviewable_object.avg_score.should == @review.rating
+    reviewable_object.review_count.should == 1
+  end
 end

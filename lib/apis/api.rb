@@ -1,8 +1,10 @@
 require_relative 'sessions_api'
 require_relative 'users_api'
 require_relative 'shops_api'
+require_relative 'products_api'
 require_relative 'shop_products_api'
 require_relative 'reviews_api'
+require_relative 'search_api'
 require 'rabl'
 
 module API
@@ -39,6 +41,8 @@ module API
     mount API::Users
     mount API::Shops
     mount API::ShopProducts
+    mount API::Products
     mount API::Reviews
+    mount API::Search
   end
 end

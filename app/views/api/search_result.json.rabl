@@ -6,7 +6,7 @@ child :thumb do
   end
 end
 child :shop do 
-  attributes :id, :name
+  attributes :id, :name, :distance
 end
 child :product do 
   attributes :id, :name

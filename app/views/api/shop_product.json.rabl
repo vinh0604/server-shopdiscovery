@@ -1,7 +1,6 @@
 object :object_root => nil
 attributes :id, :price, :warranty, :origin, :description, 
-           :avg_score, :review_count
-attribute :status => :condition
+           :avg_score, :review_count, :status
 child :photos do
   node :url do |p|
     p.image.url

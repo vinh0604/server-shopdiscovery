@@ -1,0 +1,16 @@
+smartphone: smart phone
+cell phone: mobile phone
+cellphone: mobile phone
+mobilephone: mobile phone
+ereader: e reader
+ebook reader: e reader
+personal computer: *pc
+disc drive: *odd
+dvd drive: *odd
+usb drive: *usb
+video card: *vga
+motherboard: *mainboard
+head phone: *headphone
+tivi: *tv
+television: *tv
+tablet pc: *tablet

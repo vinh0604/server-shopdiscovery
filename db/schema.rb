@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121210171036) do
+ActiveRecord::Schema.define(:version => 20121219170019) do
 
   create_table "categories", :force => true do |t|
     t.integer  "parent_id"
@@ -108,9 +108,12 @@ ActiveRecord::Schema.define(:version => 20121210171036) do
     t.string   "name"
     t.string   "barcode"
     t.hstore   "specifics"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+    t.tsvector "textsearchable"
   end
+
+  add_index "products", ["textsearchable"], :name => "textsearch_idx"
 
   create_table "products_tags", :force => true do |t|
     t.integer "tag_id"
@@ -181,10 +184,10 @@ ActiveRecord::Schema.define(:version => 20121210171036) do
     t.integer  "review_count"
     t.text     "description"
     t.integer  "creator_id"
-    t.datetime "created_at",                                           :null => false
-    t.datetime "updated_at",                                           :null => false
-    t.spatial  "location",       :limit => {:srid=>0, :type=>"point"}
+    t.datetime "created_at",                                                                 :null => false
+    t.datetime "updated_at",                                                                 :null => false
     t.string   "shop_key"
+    t.spatial  "location",       :limit => {:srid=>4326, :type=>"point", :geographic=>true}
   end
 
   create_table "shops_tags", :force => true do |t|
