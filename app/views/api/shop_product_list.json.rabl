@@ -2,7 +2,7 @@ collection @object
 attributes :id, :price, :status, :avg_score, :review_count
 child :thumb do
   node :url do |t|
-    t.image.url
+    t.image.thumb.url
   end
 end
 child :shop do 
