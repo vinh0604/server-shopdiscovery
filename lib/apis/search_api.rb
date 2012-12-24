@@ -9,7 +9,7 @@ module API
         optional :distance, :type => Float, :desc => 'Distance from user\'s location'
         optional :location, :type => String, :desc => "User's location in WKT format"
         optional :min_price, :type => Float, :desc => 'Minimum price'
-        optional :min_price, :type => Float, :desc => 'Maximum price'
+        optional :max_price, :type => Float, :desc => 'Maximum price'
         optional :min_score, :type => Float, :desc => 'Minimum average review score'
         optional :sort, :type => Integer, :desc => 'Search result sort type'
         optional :page, :type => Integer

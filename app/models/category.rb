@@ -22,7 +22,7 @@ class Category < ActiveRecord::Base
   end
 
   def all_children
-    if has_children?
+    if !has_children?
       [id]
     else
       Category.where("? = ANY(regexp_split_to_array(sequence,','))", self.id.to_s).

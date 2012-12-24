@@ -35,6 +35,20 @@ module API
         end
         categories.to_json(:methods => :has_children?)
       end
+
+      desc "Get category with parent and children"
+      params do
+        optional :category_id, :type => Integer
+      end
+      get '/list' do
+        if params[:category_id]
+          category = Category.find(params[:category_id])
+          present category, :with => API::RablPresenter, :source => 'api/category'
+        else
+          categories = Category.where(:parent_id => nil).all
+          {:children => categories.as_json(:only => [:id, :name])}
+        end
+      end
     end
   end
 end
