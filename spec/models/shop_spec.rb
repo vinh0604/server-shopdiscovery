@@ -28,4 +28,8 @@ describe Shop do
   it "has many reviews" do
     @shop.should respond_to(:reviews)
   end
+
+  it "has many favorite shops" do
+    @shop.should respond_to(:favorite_shops)
+  end
 end

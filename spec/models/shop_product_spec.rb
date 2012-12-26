@@ -21,6 +21,10 @@ describe ShopProduct do
     @shop_product.should respond_to :reviews
   end
 
+  it "has many wish lists" do
+    @shop_product.should respond_to :wish_lists
+  end
+
   context "search products" do
     before(:each) do
       @category = FactoryGirl.create(:sub_category)

@@ -6,6 +6,7 @@ class AddGenerateProductTsvectorFunction < ActiveRecord::Migration
       DECLARE
         category categories%ROWTYPE;
         category_name VARCHAR(255);
+        tag_value TEXT;
         product products%ROWTYPE;
       BEGIN
         FOR product IN SELECT * FROM products LOOP
@@ -18,7 +19,8 @@ class AddGenerateProductTsvectorFunction < ActiveRecord::Migration
           ELSE
             category_name := category.name;
           END IF;
-          UPDATE products SET textsearchable = to_tsvector('product',coalesce(replace(name,'-',' '),'') || ' ' || coalesce(category_name,'')) WHERE id = product.id;
+          SELECT array_to_string(array_agg(value), ' ') INTO tag_value FROM tags INNER JOIN products_tags ON tags.id = products_tags.tag_id WHERE products_tags.product_id = product.id;
+          UPDATE products SET textsearchable = to_tsvector('product',coalesce(replace(name,'-',' '),'') || ' ' || coalesce(category_name,'') || ' ' || coalesce(tag_value,'')) WHERE id = product.id;
         END LOOP;
         RETURN 1;
       END;

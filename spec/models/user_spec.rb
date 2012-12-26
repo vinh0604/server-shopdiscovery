@@ -18,6 +18,18 @@ describe User do
     user.reviews.should be_instance_of(Array)
   end
 
+  it "has many favorite shops" do
+    user = User.new
+    user.should respond_to :favorite_shops
+    user.favorite_shops.should be_instance_of(Array)
+  end
+
+  it "has many wished products" do
+    user = User.new
+    user.should respond_to :wish_lists
+    user.wish_lists.should be_instance_of(Array)
+  end
+
   context "creation" do
     before(:each) do
       @user = FactoryGirl.create(:user)

@@ -3,6 +3,7 @@ class ShopProduct < ActiveRecord::Base
   belongs_to :product
   has_many :photos, :as => :imageable
   has_many :reviews, :as => :reviewable
+  has_many :wish_lists, :dependent => :delete_all
   has_one :thumb, :class_name => 'Photo', :as => :imageable,
           :conditions => {:ordinal => 1}
 

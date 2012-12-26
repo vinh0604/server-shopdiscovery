@@ -2,6 +2,7 @@
 class Product < ActiveRecord::Base
   belongs_to :category
   has_many :shop_products
+  has_and_belongs_to_many :tags
   after_save :update_textsearchable
 
   serialize :specifics, ActiveRecord::Coders::Hstore
@@ -30,6 +31,7 @@ class Product < ActiveRecord::Base
       _category = _category.parent
     end
     category_name = _category ? _category.name : ''
-    Product.update_all "textsearchable = to_tsvector(coalesce(replace('#{self.name}','-',' '),'') || ' ' || coalesce('#{category_name}',''))", "id = #{self.id}"
+    tag_value = self.tags.select("array_to_string(array_agg(tags.value), ' ') as tag_value").first.tag_value
+    Product.update_all "textsearchable = to_tsvector(coalesce(replace('#{self.name}','-',' '),'') || ' ' || coalesce('#{category_name}','') || ' ' || coalesce('#{tag_value}',''))", "id = #{self.id}"
   end
 end

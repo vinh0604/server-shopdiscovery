@@ -5,6 +5,7 @@ require_relative 'products_api'
 require_relative 'shop_products_api'
 require_relative 'reviews_api'
 require_relative 'search_api'
+require_relative 'favorites_api'
 require 'rabl'
 
 module API
@@ -44,5 +45,6 @@ module API
     mount API::Products
     mount API::Reviews
     mount API::Search
+    mount API::Favorites
   end
 end
