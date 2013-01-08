@@ -13,6 +13,10 @@ describe Shop do
     @shop.should respond_to :shop_products
   end
 
+  it "has many managers" do
+    @shop.should respond_to :managers
+  end
+
   it "has many photos" do
     @shop.should respond_to :photos
   end

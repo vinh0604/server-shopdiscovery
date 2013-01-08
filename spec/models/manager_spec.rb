@@ -1,5 +1,13 @@
 require 'spec_helper'
 
 describe Manager do
-  pending "add some examples to (or delete) #{__FILE__}"
+  before(:each) do
+    @manager = FactoryGirl.build(:manager)
+  end
+  it "belongs to a shop" do
+    @manager.should respond_to(:shop)
+  end
+  it "belongs to a user" do
+    @manager.should respond_to(:user)
+  end
 end

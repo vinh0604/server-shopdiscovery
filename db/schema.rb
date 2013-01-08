@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121219170019) do
+ActiveRecord::Schema.define(:version => 20130108045552) do
 
   create_table "categories", :force => true do |t|
     t.integer  "parent_id"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(:version => 20121219170019) do
     t.boolean  "owner"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "shop_id"
   end
 
   create_table "message_receivers", :force => true do |t|

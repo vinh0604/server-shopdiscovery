@@ -52,26 +52,6 @@ module API
         categories = Category.where(:id => category_ids).all
         categories.to_json(:methods => :has_children?)
       end
-
-      desc "Favorite shops list"
-      segment '/:shop_product_id' do
-        resource '/favorite' do
-          desc "Check if shop is in favorite shops list"
-          get '/' do
-            
-          end
-
-          desc "Add shop to favorite shops list"
-          post '/' do
-            
-          end
-
-          desc "Remove shop from favorite shops list"
-          delete '/' do
-            
-          end
-        end
-      end
     end
   end
 end
