@@ -20,6 +20,22 @@ module API
 
         present products, :with => API::RablPresenter, :source => 'api/products'
       end
+
+      desc 'Find product'
+      get '/:product_id' do
+        @product = Product.find(params[:product_id])
+        present @product, :with => API::RablPresenter, :source => 'api/product_detail'
+      end
+
+      desc 'Find product with barcode'
+      get '/barcode/:ean' do
+        @product = Product.find_by_barcode(params[:ean])
+        if @product
+          @product.to_json(:only  => [:id,:name])
+        else
+          {}
+        end
+      end
     end
 
     resource :categories do

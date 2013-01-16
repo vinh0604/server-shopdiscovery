@@ -89,6 +89,13 @@ describe "Managements" do
     
   end
 
+  context "ShopProducts" do
+    describe "GET /api/v1/managements/shop_products/check" do
+      it "returns status 200 with shop product data if product exists in shop"
+      it "returns status 200 with plain hash if product not exists in shop"
+    end
+  end
+
   context "Photos" do
     before(:each) do
       @user = FactoryGirl.create(:user)

@@ -1,7 +1,7 @@
 development:
   adapter: postgis
   encoding: utf8
-  database: shopdiscovery
+  database: shopdiscovery_backend_test
   pool: 5
   username: postgres
   password:

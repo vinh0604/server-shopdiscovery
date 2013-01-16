@@ -22,6 +22,39 @@ describe "Products" do
     end
   end
 
+  describe "GET /api/v1/products/:product_id" do
+    before(:each) do
+      @product = FactoryGirl.create(:product)
+    end
+    it "returns status 200 with product data if product found" do
+      get "api/v1/products/#{@product.id}"
+      response.status.should == 200
+      data = JSON.parse response.body
+      data['id'].should == @product.id
+    end
+    it "returns status 500 if product not found" do
+      get "api/v1/products/#{@product.id} + 1"
+      response.status.should == 500
+    end
+  end
+
+  describe "GET /api/v1/products/barcode/:ean" do
+    before(:each) do
+      @product = FactoryGirl.create(:product)
+    end
+    it "returns status 200 with product data if found a product with provided barcode" do
+      get "api/v1/products/barcode/#{@product.barcode}"
+      response.status.should == 200
+      data = JSON.parse response.body
+      data['id'].should == @product.id
+    end
+    it "returns status 200 with empty hash if not found product with provided barcode" do
+      get "api/v1/products/barcode/0000000000000"
+      response.status.should == 200
+      response.body.should == {}.to_json
+    end
+  end
+
   describe "GET /api/v1/categories" do
     before(:each) do
       @sub_category = FactoryGirl.create(:sub_category)

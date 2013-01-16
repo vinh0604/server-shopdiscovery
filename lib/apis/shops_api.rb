@@ -9,7 +9,7 @@ module API
       end
       get '/' do
         query = Shop.includes(:tags).order('shops.id')
-        query = query.where('lower(name) LIKE :keyword OR lower(tags.value) LIKE :keyword', :keyword => "%#{params[:keyword]}%") unless params[:keyword].blank?
+        query = query.where('name ILIKE :keyword OR tags.value ILIKE :keyword', :keyword => "%#{params[:keyword]}%") unless params[:keyword].blank?
         if params[:page] and params[:per_page]
           query = query.page(params[:page]).per(params[:per_page])
         elsif params[:page]

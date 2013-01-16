@@ -2,6 +2,7 @@ object :object_root => nil
 attributes :id, :price, :warranty, :origin, :description, 
            :avg_score, :review_count, :status
 child :photos do
+  attributes :id
   node :url do |p|
     p.image.url
   end

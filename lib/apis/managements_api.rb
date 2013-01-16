@@ -110,7 +110,7 @@ module API
             end
             # destroy deleted photos from shops
             if !deleted_photos.empty?
-              Photo.destroy_all("id IN (#{deleted_photos.join(',')}) AND ((imageable = 'Shop' AND imageable_id = #{@shop.id}) OR imageable_id IS NULL)")
+              Photo.destroy_all("id IN (#{deleted_photos.join(',')}) AND ((imageable_type = 'Shop' AND imageable_id = #{@shop.id}) OR imageable_id IS NULL)")
             end
             
             # return response
@@ -124,7 +124,7 @@ module API
         delete '/:shop_id' do
           authenticate!
           @shop = Shop.joins(:managers).
-                    where('shops.id = ? AND managers.user_id = ?', params[:shop_id], current_user.id).
+                    where('shops.id = ? AND managers.user_id = ? AND managers.owner = ?', params[:shop_id], current_user.id, true).
                     first
           if @shop
             @shop.destroy
@@ -137,6 +137,141 @@ module API
 
       resource :products do
         # not yet implement
+      end
+
+      resource :shop_products do
+        desc 'Check if product exist in shop'
+        params do
+          requires :shop_id, :type => Integer
+          requires :product_id, :type => Integer
+        end
+        get '/check' do
+          shop_product = ShopProduct.where(:shop_id => params[:shop_id], :product_id => params[:product_id]).first
+          if shop_product
+            present shop_product, :with => API::RablPresenter, :source => 'api/shop_product_detail'
+          else
+            {}
+          end
+        end
+
+        desc "Create new shop product"
+        params do
+          requires :shop_id, :type => Integer
+          requires :product_id, :type => Integer
+          optional :price, :type => Float
+          optional :warranty, :type => Integer
+          optional :status, :type => Integer
+          optional :origin, :type => Integer
+          optional :description, :type => String
+          optional :added_photos, :type => String, :desc => 'Array of added photo id in JSON'
+        end
+        post '/' do
+          authenticate!
+          # check if user is shop manager
+          shop = Shop.joins(:managers).
+                      where("shops.id = ? AND managers.user_id = ?", params[:shop_id], current_user.id).
+                      first
+          product = Product.where("products.id = ?", params[:product_id]).first
+          if shop.nil? or product.nil?
+            error!({message: 'Shop or product does not exists'}.to_json, 500)
+            return
+          end
+          # check if shop product exists in shop
+          shop_product = ShopProduct.where(:shop_id => params[:shop_id], :product_id => params[:product_id]).first
+          if shop_product
+            error!({message: 'Existed product in shop'}.to_json, 500)
+            return
+          end
+          # create new shop product
+          added_photos = params[:added_photos] ? JSON.parse(params[:added_photos]) : []
+          shop_product = ShopProduct.new({
+            :price => params[:price],
+            :warranty => params[:warranty],
+            :status => params[:status],
+            :origin => params[:origin],
+            :description => params[:description],
+            :shop_id => params[:shop_id],
+            :product_id => params[:product_id]
+          })
+          if shop_product.save
+            # add photo for shop product
+            Photo.where(:id => added_photos, :imageable_id => nil).each do |p|
+              p.imageable = shop_product
+              p.save
+            end
+            # set thumb photo
+            thumb_photo = shop_product.photos.first
+            if shop_product.thumb.nil? and thumb_photo
+              thumb_photo.update_attributes(:ordinal => true)
+            end
+            shop_product
+          else
+            error!('Can not create product for shop', 500)
+          end
+        end
+
+        desc "Update shop product"
+        params do
+          optional :price, :type => Float
+          optional :warranty, :type => Integer
+          optional :status, :type => Integer
+          optional :origin, :type => Integer
+          optional :description, :type => String
+          optional :added_photos, :type => String, :desc => 'Array of added photo id in JSON'
+          optional :deleted_photos, :type => String, :desc => "Deleted photo ids in JSON"
+        end
+        put '/:id' do
+          authenticate!
+          shop_product = ShopProduct.find(params[:id])
+          # check if user is shop manager
+          shop = Shop.joins(:managers).
+                      where("shops.id = ? AND managers.user_id = ?", shop_product.shop_id, current_user.id).
+                      first
+          if shop.nil?
+            error!({message: 'Shop does not exists'}.to_json, 500)
+            return
+          end
+          # update shop product
+          added_photos = params[:added_photos] ? JSON.parse(params[:added_photos]) : []
+          deleted_photos = params[:deleted_photos] ? JSON.parse(params[:deleted_photos]) : []
+          shop_product.update_attributes({
+            :price => params[:price],
+            :warranty => params[:warranty],
+            :status => params[:status],
+            :origin => params[:origin],
+            :description => params[:description]
+          })
+          # add photo for shop product
+          Photo.where(:id => added_photos, :imageable_id => nil).each do |p|
+            p.imageable = shop_product
+            p.save
+          end
+          # destroy deleted photos from shops
+          if !deleted_photos.empty?
+            Photo.destroy_all("id IN (#{deleted_photos.join(',')}) AND ((imageable_type = 'ShopProduct' AND imageable_id = #{shop_product.id}) OR imageable_id IS NULL)")
+          end
+          # set thumb photo
+          thumb_photo = shop_product.photos.first
+          if shop_product.thumb.nil? and thumb_photo
+            thumb_photo.update_attributes(:ordinal => true)
+          end
+          shop_product
+        end
+
+        desc "Delete a shop product"
+        delete '/:id' do
+          authenticate!
+          shop_product = ShopProduct.find(params[:id])
+          # check if user is shop manager
+          shop = Shop.joins(:managers).
+                      where("shops.id = ? AND managers.user_id = ?", shop_product.shop_id, current_user.id).
+                      first
+          if shop.nil?
+            error!({message: 'Shop does not exists'}.to_json, 500)
+            return
+          end
+          shop_product.destroy
+        end
       end
     end
 

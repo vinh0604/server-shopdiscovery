@@ -7,6 +7,7 @@ require_relative 'reviews_api'
 require_relative 'search_api'
 require_relative 'favorites_api'
 require_relative 'managements_api'
+require_relative 'suggestions_api'
 require 'rabl'
 
 module API
@@ -48,5 +49,6 @@ module API
     mount API::Search
     mount API::Favorites
     mount API::Managements
+    mount API::Suggestions
   end
 end
