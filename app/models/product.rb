@@ -7,6 +7,10 @@ class Product < ActiveRecord::Base
 
   serialize :specifics, ActiveRecord::Coders::Hstore
 
+  validates :name, :uniqueness => { :case_sensitive => false }
+  validates :barcode , :uniqueness => true, :allow_blank => true, :allow_nil => true
+  validates :name, :presence => true
+
   def min_price
     shop_products.minimum('price')
   end

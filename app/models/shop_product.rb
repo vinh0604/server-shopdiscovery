@@ -4,8 +4,11 @@ class ShopProduct < ActiveRecord::Base
   has_many :photos, :as => :imageable, :dependent => :delete_all
   has_many :reviews, :as => :reviewable, :dependent => :delete_all
   has_many :wish_lists, :dependent => :delete_all
+  has_many :promotions, :dependent => :delete_all
   has_one :thumb, :class_name => 'Photo', :as => :imageable,
           :conditions => {:ordinal => 1}
+  has_one :active_promotion, :class_name => 'Promotion',
+          :conditions => ["promotions.expires > ?", DateTime.now]
 
   scope :nearby, lambda { |loc,distance|
     joins(:shop).where("ST_DWithin(ST_GeographyFromText(?), shops.location, ?) = 't'", loc, distance*1000)

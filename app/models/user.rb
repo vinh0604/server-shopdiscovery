@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   has_many :reviews, :foreign_key => 'reviewer_id'
   has_many :favorite_shops, :dependent => :delete_all
   has_many :wish_lists, :dependent => :delete_all
+  has_many :managers, :dependent => :delete_all
 
   devise :database_authenticatable, :token_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable

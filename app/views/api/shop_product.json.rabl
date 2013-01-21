@@ -19,3 +19,6 @@ child :product do
     end
   end
 end
+child :active_promotion do 
+  attributes :id, :price, :expires, :active, :amount
+end

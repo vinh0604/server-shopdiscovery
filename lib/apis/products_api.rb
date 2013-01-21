@@ -27,6 +27,51 @@ module API
         present @product, :with => API::RablPresenter, :source => 'api/product_detail'
       end
 
+      desc "Create new product"
+      params do
+        requires :name, :type => String
+        optional :barcode, :type => String
+        optional :category_id, :type => Integer
+        optional :specifics, :type => String, :desc => 'Product specifics in JSON'
+      end
+      post '/' do
+        authenticate!
+        specifics = params[:specifics].blank? ? {} : JSON.parse(params[:specifics])
+        product = Product.new({
+          :name => params[:name],
+          :barcode => params[:barcode],
+          :category_id => params[:category_id],
+          :specifics => specifics
+        })
+        if product.save
+          product
+        else
+          error!(product.errors.to_json(:methods => :full_messages), 400)
+        end
+      end
+
+      desc "Update product"
+      params do
+        optional :name, :type => String
+        optional :barcode, :type => String
+        optional :category_id, :type => Integer
+        optional :specifics, :type => String, :desc => 'Product specifics in JSON'
+      end
+      put '/:id' do
+        authenticate!
+        specifics = params[:specifics].blank? ? {} : JSON.parse(params[:specifics])
+        product = Product.find(params[:id])
+        product.name = params[:name] unless params[:name].blank?
+        product.barcode = params[:barcode] unless params[:barcode].blank?
+        product.category_id = params[:category_id] unless params[:category_id].blank?
+        product.specifics = specifics unless specifics.blank?
+        if product.save
+          product
+        else
+          error!(product.errors.to_json(:methods => :full_messages), 400)
+        end
+      end
+
       desc 'Find product with barcode'
       get '/barcode/:ean' do
         @product = Product.find_by_barcode(params[:ean])

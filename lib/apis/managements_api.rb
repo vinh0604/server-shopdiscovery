@@ -135,10 +135,6 @@ module API
         end
       end
 
-      resource :products do
-        # not yet implement
-      end
-
       resource :shop_products do
         desc 'Check if product exist in shop'
         params do

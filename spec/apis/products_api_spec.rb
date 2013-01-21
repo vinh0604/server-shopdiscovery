@@ -33,8 +33,46 @@ describe "Products" do
       data['id'].should == @product.id
     end
     it "returns status 500 if product not found" do
-      get "api/v1/products/#{@product.id} + 1"
+      get "api/v1/products/#{@product.id + 1}"
       response.status.should == 500
+    end
+  end
+
+  describe "POST /api/v1/products" do
+    before(:each) do
+      @user = FactoryGirl.create(:user)
+    end
+    it "returns status 201 and created product if success" do
+      post 'api/v1/products', {:name => 'product', :auth_token => @user.authentication_token}
+      response.status.should == 201
+      Product.count.should == 1
+      Product.first.name.should == 'product'
+    end
+    it "returns status 400 if params[:name] is not provided" do
+      post 'api/v1/products', {:auth_token => @user.authentication_token}
+      response.status.should == 400
+    end
+    it "returns status 401 if authentication failed" do
+      post 'api/v1/products', {:name => 'product'}
+      response.status.should == 401
+    end
+  end
+
+  describe "PUT /api/v1/products/:id" do
+    before(:each) do
+      @user = FactoryGirl.create(:user)
+      @product = FactoryGirl.create(:product)
+    end
+    it "returns status 200 and product data if success" do
+      put "api/v1/products/#{@product.id}",{:name => 'product', :specifics => {'Manufacturer' => 'Samsung'}.to_json, :auth_token => @user.authentication_token},{'HTTP_ACCEPT' => "application/json"}
+      response.status.should == 200
+      @product.reload
+      @product.name.should == 'product'
+      @product.specifics['Manufacturer'].should == 'Samsung'
+    end
+    it "returns status 401 if authentication failed" do
+      put "api/v1/products/#{@product.id}", {:name => 'product'}
+      response.status.should == 401
     end
   end
 
