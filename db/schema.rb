@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130119035416) do
+ActiveRecord::Schema.define(:version => 20130210142213) do
 
   create_table "categories", :force => true do |t|
     t.integer  "parent_id"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20130119035416) do
     t.string   "address"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.string   "identity"
   end
 
   create_table "favorite_shops", :force => true do |t|
@@ -50,8 +51,9 @@ ActiveRecord::Schema.define(:version => 20130119035416) do
   create_table "message_receivers", :force => true do |t|
     t.integer  "user_id"
     t.integer  "message_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.integer  "status",     :default => 0
   end
 
   create_table "messages", :force => true do |t|
@@ -59,18 +61,20 @@ ActiveRecord::Schema.define(:version => 20130119035416) do
     t.string   "title"
     t.text     "content"
     t.datetime "sent_date"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.integer  "status",     :default => 0
   end
 
   create_table "notifications", :force => true do |t|
     t.integer  "user_id"
     t.string   "source_type"
     t.integer  "source_id"
-    t.integer  "type"
+    t.integer  "notification_type"
     t.text     "content"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.integer  "status",            :default => 0
   end
 
   create_table "order_shipments", :force => true do |t|
@@ -226,6 +230,7 @@ ActiveRecord::Schema.define(:version => 20130119035416) do
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
     t.string   "identity"
+    t.boolean  "admin"
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true

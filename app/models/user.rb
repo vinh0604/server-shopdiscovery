@@ -4,6 +4,9 @@ class User < ActiveRecord::Base
   has_many :favorite_shops, :dependent => :delete_all
   has_many :wish_lists, :dependent => :delete_all
   has_many :managers, :dependent => :delete_all
+  has_many :notifications, :dependent => :delete_all
+  has_many :message_receivers, :dependent => :delete_all
+  has_many :messages, :foreign_key => 'sender_id'
 
   devise :database_authenticatable, :token_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable

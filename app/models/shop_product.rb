@@ -10,6 +10,9 @@ class ShopProduct < ActiveRecord::Base
   has_one :active_promotion, :class_name => 'Promotion',
           :conditions => ["promotions.expires > ?", DateTime.now]
 
+  after_create :send_new_product_notification
+  after_save :send_updated_notification
+
   scope :nearby, lambda { |loc,distance|
     joins(:shop).where("ST_DWithin(ST_GeographyFromText(?), shops.location, ?) = 't'", loc, distance*1000)
   }
@@ -114,5 +117,37 @@ class ShopProduct < ActiveRecord::Base
     end
 
     query
+  end
+
+  private
+  def send_new_product_notification
+    notif_user_ids = self.shop.favorite_shops.map { |w| w.user_id }
+    notif_content = "[[Shop:#{self.shop.id}]] adds [[Product:#{self.product_id}]] to its catalog"
+    notif_user_ids.each do |_id|
+      notification = Notification.create({
+        :notification_type => Notification::TYPES[:new_product],
+        :content => notif_content,
+        :user_id => _id,
+        :source => self,
+        :status => Notification::STATUSES[:new]
+      })
+    end
+  end
+
+  def send_updated_notification
+    if price_changed?
+      notif_user_ids = self.wish_lists.map { |w| w.user_id } |
+                        self.shop.favorite_shops.map { |w| w.user_id }
+      notif_content = "[[Shop:#{self.shop.id}]] starts selling [[Product:#{self.product_id}]] at [[Money:#{self.price}]]"
+      notif_user_ids.each do |_id|
+        notification = Notification.create({
+          :notification_type => Notification::TYPES[:price_change],
+          :content => notif_content,
+          :user_id => _id,
+          :source => self,
+          :status => Notification::STATUSES[:new]
+        })
+      end
+    end
   end
 end

@@ -10,6 +10,7 @@ require_relative 'managements_api'
 require_relative 'suggestions_api'
 require_relative 'managers_api'
 require_relative 'promotions_api'
+require_relative 'notifications_api'
 require 'rabl'
 
 module API
@@ -54,5 +55,6 @@ module API
     mount API::Suggestions
     mount API::Managers
     mount API::Promotions
+    mount API::Notifications
   end
 end
