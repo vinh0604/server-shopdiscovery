@@ -1,6 +1,6 @@
-object @object, :root => nil
+collection @object
 attributes :id, :title, :content, :sent_date
-child :user do
+child :sender do
   attributes :id, :username
   node :full_name do |u|
     u.contact.full_name

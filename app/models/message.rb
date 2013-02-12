@@ -10,6 +10,6 @@ class Message < ActiveRecord::Base
   scope :active, where{status != STATUSES[:deleted]}
 
   def headline
-    @headline ||= truncate(content, :separator => ' ')
+    @headline ||= content.truncate(30, :separator => ' ')
   end
 end

@@ -1,8 +1,8 @@
-collection @object, :root => 'messages', :object_root => 'message'
+collection @object
 attributes :unread?
 glue :message do
   attributes :id, :title, :headline, :sent_date
-  child :user do
+  child :sender do
     attributes :id, :username
     node :full_name do |u|
       u.contact.full_name

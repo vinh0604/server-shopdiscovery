@@ -8,7 +8,7 @@ module API
       end
       get '/' do
         authenticate!
-        query = current_user.message_receivers.includes(:messages).order('sent_date DESC')
+        query = current_user.message_receivers.joins(:message).order('sent_date DESC')
         if params[:page] and params[:per_page]
           query = query.page(params[:page]).per(params[:per_page])
         elsif params[:page]
@@ -47,14 +47,16 @@ module API
       desc 'Get detail of a message'
       get '/:id' do
         authenticate!
-        message = Message.find(params[:id])
-        if current_user.message_receivers.where(:message_id => message.id).exists?
-          message_receiver = current_user.message_receivers.where(:message_id => message.id).first
-          message_receiver.status = MessageReceiver::STATUSES[:read]
-          message_receiver.save
-          present message, :with => API::RablPresenter, :source => 'api/message_detail'
-        elsif message.user_id == current_user.id
-          present message, :with => API::RablPresenter, :source => 'api/message_detail'
+        @message = Message.find(params[:id])
+        if current_user.message_receivers.where(:message_id => @message.id).exists?
+          message_receiver = current_user.message_receivers.where(:message_id => @message.id).first
+          if message_receiver.unread?
+            message_receiver.status = MessageReceiver::STATUSES[:read]
+            message_receiver.save
+          end
+          present @message, :with => API::RablPresenter, :source => 'api/message_detail'
+        elsif @message.sender_id == current_user.id
+          present @message, :with => API::RablPresenter, :source => 'api/message_detail'
         else
           error!({message: '401 Unauthorized'}.to_json, 401)
         end
@@ -96,7 +98,7 @@ module API
       delete '/:id' do
         authenticate!
         message = Message.find(params[:id])
-        if params[:sent] and message.user_id == current_user.id
+        if params[:sent] and message.sender_id == current_user.id
           message.status = Message::STATUSES[:deleted]
           message.save
           {:success => true}

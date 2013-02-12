@@ -1,8 +1,6 @@
-collection @object
-attributes :id, :title, :headline, :sent_date
-child :message_receivers => :receivers do
-  attributes :id, :user_id
-  node :username do |r|
-    r.user.username
-  end
+object false
+child(@object) do
+  extends 'api/sent_message'
 end
+node(:total) { @object.total_count }
+node(:offset) { @object.offset_value }

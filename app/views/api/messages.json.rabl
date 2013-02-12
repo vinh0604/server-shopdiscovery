@@ -1,5 +1,5 @@
 object false
-child(@object) do
+child(@object => 'messages') do
   extends 'api/message'
 end
 node(:total) { @object.total_count }
