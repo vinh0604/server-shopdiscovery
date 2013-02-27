@@ -1,5 +1,17 @@
 ServerShopdiscovery::Application.routes.draw do
+  get "admin/index"
+
   mount API::AppAPI => '/'
+    devise_for :users
+    devise_scope :user do
+      get "login", :to => "devise/sessions#new"
+    end
+    namespace :admin do
+      resources :home
+      resources :users
+      resources :shops
+      resources :products
+    end
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

@@ -17,6 +17,10 @@ module API
       end
       get '/' do
         shop_products = ShopProduct.search_products(params)
+        if shop_products.total_count > 0 and shop_products.offset_value == 0
+          search_term = params[:keyword].blank? ? '' : params[:keyword].strip.gsub('-',' ').downcase
+          SearchCompletion.add_term(search_term)
+        end
         present shop_products, :with => API::RablPresenter, :source => 'api/search_results'
       end
     end

@@ -17,11 +17,6 @@ class Shop < ActiveRecord::Base
   attr_accessor :distance
   
   def full_address
-    if @full_address.nil?
-      @full_address = street_address
-      @full_address += ', ' + district unless district.blank?
-      @full_address += ', ' + city unless district.blank?
-    end
-    @full_address
+    @full_address ||= [street_address, district, city].reject(&:blank?).join(', ')
   end
 end

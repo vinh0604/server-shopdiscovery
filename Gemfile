@@ -22,7 +22,9 @@ group :assets do
 end
 
 gem 'jquery-rails'
-gem "haml-rails"
+# gem "haml-rails"
+gem "angular-rails"
+gem 'requirejs-rails'
 
 # gems for testing
 group :development, :test do

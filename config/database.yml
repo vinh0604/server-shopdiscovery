@@ -19,7 +19,6 @@ production:
   adapter: postgis
   encoding: utf8
   database: shopdiscovery_production
-  pool: 5
   username: postgres
   password:
 

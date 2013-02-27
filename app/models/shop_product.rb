@@ -5,6 +5,7 @@ class ShopProduct < ActiveRecord::Base
   has_many :reviews, :as => :reviewable, :dependent => :delete_all
   has_many :wish_lists, :dependent => :delete_all
   has_many :promotions, :dependent => :delete_all
+  has_many :orders, :dependent => :delete_all
   has_one :thumb, :class_name => 'Photo', :as => :imageable,
           :conditions => {:ordinal => 1}
   has_one :active_promotion, :class_name => 'Promotion',
@@ -119,22 +120,45 @@ class ShopProduct < ActiveRecord::Base
     query
   end
 
+  def place_order(params)
+    return false if self.price.nil?
+    _order = Order.new({
+      shop_product_id: self.id,
+      user_id: params[:user_id],
+      amount: params[:amount],
+      price: self.price,
+      tax: 0,
+      total: self.price * params[:amount],
+      status: Order::STATUSES[:new]
+    })
+    if _order.save
+      _contact = Contact.create(params[:contact])
+      OrderShipment.create(contact_id: _contact.id, order_id: _order.id)
+      _order
+    else
+      false
+    end
+  end
+
   private
   def send_new_product_notification
-    notif_user_ids = self.shop.favorite_shops.map { |w| w.user_id }
-    notif_content = "[[Shop:#{self.shop.id}]] adds [[Product:#{self.product_id}]] to its catalog"
-    notif_user_ids.each do |_id|
-      notification = Notification.create({
-        :notification_type => Notification::TYPES[:new_product],
-        :content => notif_content,
-        :user_id => _id,
-        :source => self,
-        :status => Notification::STATUSES[:new]
-      })
+    if self.shop
+      notif_user_ids = self.shop.favorite_shops.map { |w| w.user_id }
+      notif_content = "[[Shop:#{self.shop.id}]] adds [[Product:#{self.product_id}]] to its catalog"
+      notif_user_ids.each do |_id|
+        notification = Notification.create({
+          :notification_type => Notification::TYPES[:new_product],
+          :content => notif_content,
+          :user_id => _id,
+          :source => self,
+          :status => Notification::STATUSES[:new]
+        })
+      end
     end
   end
 
   def send_updated_notification
+    return if self.shop.nil?
     if price_changed?
       notif_user_ids = self.wish_lists.map { |w| w.user_id } |
                         self.shop.favorite_shops.map { |w| w.user_id }
