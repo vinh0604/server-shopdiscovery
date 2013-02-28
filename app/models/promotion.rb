@@ -1,6 +1,14 @@
 class Promotion < ActiveRecord::Base
   belongs_to :shop_product
+  has_many :promotion_bidders, :dependent => :nullify
   after_save :send_notification
+
+  def remains_slot?(_amount=1)
+    unless amount.nil?
+      return amount >= (promotion_bidders.sum(:amount) + _amount)
+    end
+    true
+  end
 
   private
   def send_notification

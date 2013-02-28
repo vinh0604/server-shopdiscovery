@@ -35,6 +35,42 @@ module API
         end
       end
 
+      desc 'get specific order in shop'
+      get '/:id' do
+        authenticate!
+        @order = Order.find(params[:id])
+        if @order.user_id == current_user.id or current_user.managers.where(:shop_id => @order.shop_product.shop_id).exists?
+          present @order, :with => API::RablPresenter, :source => 'api/order'
+        else
+          error!({message: '401 Unauthorized'}.to_json, 401)
+        end
+      end
+
+      desc 'update order in shop'
+      params do
+        requires :status, :type => Integer
+        optional :order_shipment, :type => String, :desc => 'Order shipment data in JSON'
+      end
+      put '/:id' do
+        authenticate!
+        @order = Order.find(params[:id])
+        if current_user.managers.where(:shop_id => @order.shop_product.shop_id).exists?
+          unless params[:order_shipment].nil?
+            order_shipment = JSON.parse(params[:order_shipment])
+            @order.order_shipment.update_attributes(order_shipment) unless @order.order_shipment.nil?
+            @order.total += order_shipment[:fee].to_f
+          end
+          @order.status = params[:status]
+          if @order.save
+            {success: true}
+          else
+            error!({message: 'Can not update order'}.to_json, 500)
+          end
+        else
+          error!({message: '401 Unauthorized'}.to_json, 401)
+        end
+      end
+
       desc 'create new order'
       params do
         requires :shop_product_id, :type => Integer

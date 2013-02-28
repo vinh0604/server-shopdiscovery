@@ -10,4 +10,7 @@ child :product do
 end
 child :active_promotion do 
   attributes :id, :price, :expires, :amount
+  node :bid_count do |ap|
+    ap.promotion_bidders.sum(:amount)
+  end
 end

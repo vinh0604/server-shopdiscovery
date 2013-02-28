@@ -5,7 +5,9 @@ class Notification < ActiveRecord::Base
   TYPES = {
     :promotion => 1,
     :new_product => 2,
-    :price_change => 3
+    :price_change => 3,
+    :order_cancel => 4,
+    :order_confirm => 5
   }.freeze
 
   STATUSES = {

@@ -122,11 +122,21 @@ class ShopProduct < ActiveRecord::Base
 
   def place_order(params)
     return false if self.price.nil?
+    _price = self.price
+    _promotion = self.active_promotion
+    if _promotion and _promotion.active and _promotion.remains_slot?(params[:amount])
+      _bidder = PromotionBidder.new({
+        user_id: params[:user_id],
+        promotion_id: _promotion.id,
+        amount: params[:amount]
+      })
+      _price = _promotion.price
+    end
     _order = Order.new({
       shop_product_id: self.id,
       user_id: params[:user_id],
       amount: params[:amount],
-      price: self.price,
+      price: _price,
       tax: 0,
       total: self.price * params[:amount],
       status: Order::STATUSES[:new]
@@ -134,6 +144,10 @@ class ShopProduct < ActiveRecord::Base
     if _order.save
       _contact = Contact.create(params[:contact])
       OrderShipment.create(contact_id: _contact.id, order_id: _order.id)
+      if _bidder
+        _bidder.order_id = _order.id
+        _bidder.save
+      end
       _order
     else
       false
