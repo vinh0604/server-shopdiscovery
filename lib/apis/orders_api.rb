@@ -71,6 +71,27 @@ module API
         end
       end
 
+      desc 'proceed order payment'
+      post '/:id/payment' do
+        authenticate!
+        @order = Order.find(params[:id])
+        if @order.user_id == current_user.id
+          @order.status = Order::STATUSES[:finished]
+          if @order.save
+            PurchasedOrder.create({
+              :order_id => @order.id,
+              :contact_id => @current_user.contact_id,
+              :status => PurchasedOrder::STATUSES[:success]
+            })
+            {success: true}
+          else
+            error!({message: 'Can not proceed order'}.to_json, 500)
+          end
+        else
+          error!({message: '401 Unauthorized'}.to_json, 401)
+        end
+      end
+
       desc 'create new order'
       params do
         requires :shop_product_id, :type => Integer

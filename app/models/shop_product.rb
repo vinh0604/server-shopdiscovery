@@ -138,7 +138,7 @@ class ShopProduct < ActiveRecord::Base
       amount: params[:amount],
       price: _price,
       tax: 0,
-      total: self.price * params[:amount],
+      total: _price * params[:amount],
       status: Order::STATUSES[:new]
     })
     if _order.save
