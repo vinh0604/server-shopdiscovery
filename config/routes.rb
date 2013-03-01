@@ -4,7 +4,8 @@ ServerShopdiscovery::Application.routes.draw do
   mount API::AppAPI => '/'
     devise_for :users
     devise_scope :user do
-      get "login", :to => "devise/sessions#new"
+      get "/login", :to => "devise/sessions#new"
+      delete "/logout" => "devise/sessions#destroy"
     end
     namespace :admin do
       resources :home

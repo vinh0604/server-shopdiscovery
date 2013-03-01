@@ -4,6 +4,9 @@ class Admin::BaseController < ApplicationController
 
   private
   def require_admin_user
-    redirect_to '/login', :alert => 'Please login first.' unless current_user.admin
+    unless current_user.admin
+      sign_out(current_user)
+      redirect_to '/login', :alert => 'Please login as admin.'
+    end
   end
 end

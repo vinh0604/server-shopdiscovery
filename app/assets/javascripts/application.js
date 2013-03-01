@@ -10,9 +10,29 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require jquery
-//= require jquery_ujs
-//= require_tree .
-//= require angular.min
-//= require angle-up
-//= require_tree ./angular
+require.config({
+    baseUrl: '/assets',
+    paths: {
+        "jquery": "jquery-1.9.1.min",
+        "angular": "angular.min",
+        "lodash": "lodash.underscore.min",
+        "bootstrap": "bootstrap.min",
+        "jquery-ui": "jquery-ui-1.9.2.custom.min",
+        "angular-ui": "angular-ui.min",
+        "moment": "moment.min",
+        "accounting": "accounting.min"
+    },
+    shim: {
+        'angular': {
+            exports: 'angular',
+            deps: ['jquery']
+        },
+        "bootstrap": ["jquery"],
+        "jquery-ui": ["jquery"],
+        "angular-ui": ["angular", "jquery-ui", "bootstrap"]
+    }
+});
+
+require(['lodash','jquery','angular','app','bootstrap','jquery-ui','angular-ui','moment','accounting'], function (_,$,angular,core) {
+    angular.bootstrap(document,['app']);
+});
