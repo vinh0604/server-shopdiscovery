@@ -9,8 +9,8 @@ define(['angular',
                     config(['$routeProvider', '$locationProvider', '$httpProvider',
                     function ($routeProvider,  $locationProvider, $httpProvider) {
                         $routeProvider.when('/admin/users', {
-                            templateUrl: 'test.html',
-                            controller: testCtrl
+                            templateUrl: 'users.html',
+                            controller: usersCtrl
                         }).
                         when('/admin/products', {
                             templateUrl: 'test.html',

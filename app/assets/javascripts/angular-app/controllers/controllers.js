@@ -16,6 +16,55 @@ function navCtrl ($scope, $location, $http, $window) {
     };
 }
 
+function usersCtrl ($scope, $http, $window) {
+    $scope._ = $window._;
+    $scope.currentPage = 0;
+    $scope.totalPage = 0;
+    $scope.lowerPage = 0;
+    $scope.upperPage = 0;
+    $scope.usersData = [];
+    $scope.checkAll = false;
+
+    $scope.prevPage = function () {
+        if ($scope.currentPage > 0) {
+            $scope.currentPage--;
+        }
+    };
+    $scope.nextPage = function () {
+        if ($scope.currentPage < $scope.totalPage - 1) {
+            $scope.currentPage++;
+        }
+    };
+    $scope.setPage = function (page) {
+        if ($window._(page).isUndefined()) {
+            $scope.currentPage = this.n;
+        } else {
+            $scope.currentPage = page;
+        }
+    };
+
+    $scope.$watch('checkAll',function ($event) {
+        $window._($scope.usersData).each( function(user) {
+            user.checked = $scope.checkAll;
+        });
+    });
+    $scope.$watch('currentPage + totalPage', function() {
+        $scope.lowerPage = ($scope.currentPage > 2) ? ($scope.currentPage - 2) : 0;
+        $scope.upperPage = ($scope.currentPage < $scope.totalPage - 3) ? ($scope.currentPage + 2) : ($scope.totalPage - 1);
+    });
+    $scope.$watch('currentPage', function() {
+        $scope.checkAll = false;
+        $http.get('/admin/users', {params: {page: $scope.currentPage + 1, per_page: 15}}).success(function (json) {
+            $scope.usersData = $window._(json.users).pluck('user');
+            $scope.totalPage = json.total_pages;
+        });
+    });
+    $http.get('/admin/users', {params: {page: $scope.currentPage + 1, per_page: 15}}).success(function (json) {
+        $scope.usersData = $window._(json.users).pluck('user');
+        $scope.totalPage = json.total_pages;
+    });
+}
+
 function testCtrl ($scope, $location) {
     $scope.name = $location.path();
 }
