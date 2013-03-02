@@ -1,0 +1,24 @@
+<script type='text/ng-template' id='test.html'>
+  {{name}}
+</script>
+<div class="container" style="margin-top: 10px;">
+  <div class="row">
+  <div class="span3">
+    <div class="sidebar-nav" ng-controller="navCtrl">
+      <div class="well" style="padding: 8px 0;">
+        <ul class="nav nav-list"> 
+          <li class="nav-header">Admin Menu</li>        
+          <li ng-repeat='item in navData' ng-class="{active: isActiveRoute(item.id)}">
+            <a href="{{item.id}}"><i ng-class="item.className"></i> {{item.value}}</a>
+          </li>
+          <li class="divider"></li>
+          <li><a href="#" ng-click="logOut()"><i class="icon-share"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="span9">
+    <div ng-view></div>
+  </div>
+  </div>
+</div>

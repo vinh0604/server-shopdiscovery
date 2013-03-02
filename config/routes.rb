@@ -1,12 +1,19 @@
 ServerShopdiscovery::Application.routes.draw do
   get "admin/index"
 
+  class OnlyNonAjaxRequest
+    def matches?(request)
+      !request.xhr?
+    end
+  end
+
   mount API::AppAPI => '/'
     devise_for :users
     devise_scope :user do
       get "/login", :to => "devise/sessions#new"
       delete "/logout" => "devise/sessions#destroy"
     end
+    match '/admin/(*foo)', :to => 'admin/home#index', :constraints => OnlyNonAjaxRequest.new
     namespace :admin do
       resources :home
       resources :users
