@@ -1,16 +1,26 @@
 define(['angular',
+    // Angular UI
+    'angular-ui',
     // Application Files
     'angular-app/services/services',
     'angular-app/widgets/widgets',
     'angular-app/filters/filters',
     'angular-app/controllers/controllers'
-], function (angular, services, widgets, filters, controllers) {
-    return angular.module('app',['app.filters','app.services','app.widgets']).
+], function (angular, ui, services, widgets, filters, controllers) {
+    return angular.module('app',['ui', 'app.filters','app.services','app.widgets']).
                     config(['$routeProvider', '$locationProvider', '$httpProvider',
                     function ($routeProvider,  $locationProvider, $httpProvider) {
                         $routeProvider.when('/admin/users', {
                             templateUrl: 'users.html',
                             controller: usersCtrl
+                        }).
+                        when('/admin/users/new', {
+                            templateUrl: 'user.html',
+                            controller: userCtrl
+                        }).
+                        when('/admin/users/:userId/edit', {
+                            templateUrl: 'user.html',
+                            controller: userCtrl
                         }).
                         when('/admin/products', {
                             templateUrl: 'test.html',

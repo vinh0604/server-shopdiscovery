@@ -33,6 +33,6 @@ require.config({
     }
 });
 
-require(['lodash','jquery','angular','app','bootstrap','jquery-ui','angular-ui','moment','accounting'], function (_,$,angular,core) {
+require(['lodash','jquery','angular','app','bootstrap','jquery-ui','moment','accounting'], function (_,$,angular,core) {
     angular.bootstrap(document,['app']);
 });

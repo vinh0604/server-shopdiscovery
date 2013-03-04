@@ -1,0 +1,104 @@
+<div class="well">
+  <form novalidate class="form-horizontal">
+    <legend ng-bind="{true: 'New User', false: 'Edit User'}[isNew]">New User</legend>
+    <div class="control-group">
+      <!-- Avatar -->
+      <label class="control-label">Avatar</label>
+      <div class="controls">
+        <img ng-src="{{avatarUrl}}" alt="User's Avatar" width="128" my-image>
+        <br/>
+        <input id="avatar" type="file" onchange="angular.element(this).scope().setFile(this)" class="input-xlarge">
+        <br/>
+        <div ng-show="progressVisible" class="progress progress-striped active input-xlarge">
+          <div class="bar" ng-style="{'width': progress+'%'}"></div>
+        </div>
+      </div>
+    </div>
+    <div class="control-group">
+      <!-- Username -->
+      <label class="control-label" for="username">Username</label>
+      <div class="controls">
+        <input type="text" id="username" name="username" ng-model='user.username' class="input-xlarge" ng-disabled="!isNew">
+      </div>
+    </div>
+    <div class="control-group">
+      <!-- Email -->
+      <label class="control-label" for="email">Email</label>
+      <div class="controls">
+        <input type="email" id="email" name="email" ng-model='user.email' class="input-xlarge" ng-disabled="!isNew">
+      </div>
+    </div>
+    <div class="control-group">
+      <!-- Password -->
+      <label class="control-label" for="password" ng-bind="{true: 'Password', false: 'Password (New)'}[isNew]">Password</label>
+      <div class="controls">
+        <input type="password" id="email" name="password" ng-model='user.password' class="input-xlarge">
+      </div>
+    </div>
+    <div class="control-group">
+      <!-- Password Confirm -->
+      <label class="control-label" for="password_confirmation">Password (Confirm)</label>
+      <div class="controls">
+        <input type="password" id="password_confirmation" name="password_confirmation" ng-model='user.password_confirmation' class="input-xlarge">
+      </div>
+    </div>
+    <fieldset class="fieldset">
+      <legend>Contact Information</legend>
+      <div class="control-group">
+        <!-- First Name -->
+        <label class="control-label" for="first_name">First Name</label>
+        <div class="controls">
+          <input type="text" id="first_name" name="first_name" ng-model='user.contact.first_name' class="input-xlarge">
+        </div>
+      </div>
+      <div class="control-group">
+        <!-- Last Name -->
+        <label class="control-label" for="last_name">Last Name</label>
+        <div class="controls">
+          <input type="text" id="last_name" name="last_name" ng-model='user.contact.last_name' class="input-xlarge">
+        </div>
+      </div>
+      <div class="control-group">
+        <!-- Birth Date -->
+        <label class="control-label" for="birthdate">Birth Date</label>
+        <div class="controls">
+          <input ui-date id="birthdate" name="birthdate" ng-model='user.contact.birthdate' class="input-xlarge">
+        </div>
+      </div>
+      <div class="control-group">
+        <!-- Gender -->
+        <label class="control-label" for="gender">Gender</label>
+        <div class="controls">
+          <select name="gender" id="gender" ng-options="item.key as item.value for item in GENDER_DATA" ng-model="user.contact.gender" class="input-medium"></select>
+        </div>
+      </div>
+      <div class="control-group">
+        <!-- Identity Number -->
+        <label class="control-label" for="identity">Identity Number</label>
+        <div class="controls">
+          <input type="text" id="identity" name="identity" ng-model='user.contact.identity' class="input-xlarge">
+        </div>
+      </div>
+      <div class="control-group">
+        <!-- Phone -->
+        <label class="control-label" for="phone">Phone</label>
+        <div class="controls">
+          <input type="text" id="phone" name="phone" ng-model='user.contact.phone' class="input-xlarge">
+        </div>
+      </div>
+      <div class="control-group">
+        <!-- Address -->
+        <label class="control-label" for="address">Address</label>
+        <div class="controls">
+          <textarea id="address" name="address" ng-model='user.contact.address' class="input-xlarge"></textarea>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <button class="btn btn-primary" ng-bind="{true: 'Create', false: 'Update'}[isNew]" ng-click="submit()">Create</button>
+          <button class="btn btn-danger offset1" ng-click="reset()">Reset</button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</div>

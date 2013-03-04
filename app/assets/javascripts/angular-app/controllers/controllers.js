@@ -16,7 +16,7 @@ function navCtrl ($scope, $location, $http, $window) {
     };
 }
 
-function usersCtrl ($scope, $http, $window) {
+function usersCtrl ($scope, $http, $window, $location) {
     $scope._ = $window._;
     $scope.currentPage = 0;
     $scope.totalPage = 0;
@@ -24,6 +24,8 @@ function usersCtrl ($scope, $http, $window) {
     $scope.upperPage = 0;
     $scope.usersData = [];
     $scope.checkAll = false;
+    $scope.keyword = '';
+    $scope.$location = $location;
 
     $scope.prevPage = function () {
         if ($scope.currentPage > 0) {
@@ -42,6 +44,15 @@ function usersCtrl ($scope, $http, $window) {
             $scope.currentPage = page;
         }
     };
+    $scope.doSearch = function () {
+        $http.get('/admin/users', {params: {keyword: $scope.keyword, page: $scope.currentPage + 1, per_page: 15}}).success(function (json) {
+            $scope.usersData = $window._(json.users).pluck('user');
+            if ($scope.currentPage > json.total_pages - 1) {
+                $scope.currentPage = 0;
+            }
+            $scope.totalPage = json.total_pages;
+        });
+    };
 
     $scope.$watch('checkAll',function ($event) {
         $window._($scope.usersData).each( function(user) {
@@ -54,15 +65,112 @@ function usersCtrl ($scope, $http, $window) {
     });
     $scope.$watch('currentPage', function() {
         $scope.checkAll = false;
-        $http.get('/admin/users', {params: {page: $scope.currentPage + 1, per_page: 15}}).success(function (json) {
-            $scope.usersData = $window._(json.users).pluck('user');
-            $scope.totalPage = json.total_pages;
-        });
+        $scope.doSearch();
     });
-    $http.get('/admin/users', {params: {page: $scope.currentPage + 1, per_page: 15}}).success(function (json) {
-        $scope.usersData = $window._(json.users).pluck('user');
-        $scope.totalPage = json.total_pages;
+    $scope.doSearch();
+}
+
+function userCtrl ($scope, $routeParams, $http, $location, $window, GENDER_DATA, DEFAULT_IMG) {
+    $scope.isNew = !$routeParams.userId;
+    $scope.originalUser = {contact: {}, avatar: {}};
+    $scope.user = angular.copy($scope.originalUser);
+    $scope.progress = 0;
+    $scope.GENDER_DATA = _(GENDER_DATA).map( function(value, key) {
+        return {key: key, value: value};
     });
+    resetAvatar();
+
+    $scope.reset = function () {
+        $scope.user = angular.copy($scope.originalUser);
+        resetAvatar();
+    };
+    $scope.setFile = function (element) {
+        if (!$scope.fileInput) {
+            $scope.fileInput = element;
+        }
+        if (element.files && element.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $scope.$apply(function () {
+                    $scope.avatarUrl = e.target.result;
+                    $scope.uploadFile(element.files[0]);
+                });
+            };
+            reader.readAsDataURL(element.files[0]);
+        }
+    };
+    $scope.uploadFile = function(file) {
+        if (file) {
+            var fd = new FormData();
+            fd.append("avatar", file);
+            var xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function (evt) {
+                $scope.$apply(function(){
+                    if (evt.lengthComputable) {
+                        $scope.progress = Math.round(evt.loaded * 100 / evt.total);
+                    } else {
+                        $scope.progress = 0;
+                    }
+                });
+            }, false);
+            xhr.addEventListener("load", function (evt) {
+                $scope.$apply(function(){
+                    $scope.user.avatar_cache = evt.target.responseText;
+                    $scope.progressVisible = false;
+                });
+            }, false);
+            xhr.addEventListener("error", function (evt) {
+                $scope.$apply(function(){
+                    $scope.progressVisible = false;
+                    resetAvatar();
+                });
+            }, false);
+            xhr.addEventListener("abort", function (evt) {
+                $scope.$apply(function(){
+                    $scope.progressVisible = false;
+                    resetAvatar();
+                });
+            }, false);
+            xhr.open("POST", "/admin/users/upload");
+            $scope.progressVisible = true;
+            xhr.send(fd);
+        }
+    };
+    $scope.submit = function () {
+        var params = {
+            user: _($scope.user).omit('contact'),
+            contact: _($scope.user.contact).omit('full_name')
+        };
+        if ($scope.isNew) {
+            $http.post('/admin/users', params).success(successHandler);
+        } else {
+            $http.put('/admin/users/' + $routeParams.userId, params).success(successHandler);
+        }
+    };
+    $scope.loadData = function () {
+        if (!$scope.isNew) {
+            $http.get('/admin/users/' + $routeParams.userId).success(function (json) {
+                if (json.user && json.user.contact && json.user.contact.birthdate) {
+                    json.user.contact.birthdate = $window.moment(json.user.contact.birthdate)._d;
+                }
+                $scope.originalUser = json.user;
+                $scope.user = angular.copy($scope.originalUser);
+                resetAvatar();
+            });
+        }
+    };
+
+    $scope.loadData();
+
+    function resetAvatar () {
+        $scope.avatarUrl = $scope.user.avatar.url ? $scope.user.avatar.url : DEFAULT_IMG.user;
+        if ($scope.fileInput) {
+            $scope.fileInput.value = '';
+        }
+    }
+    function successHandler () {
+        $location.path('/admin/users/' + json.user.id + '/edit');
+    }
 }
 
 function testCtrl ($scope, $location) {
