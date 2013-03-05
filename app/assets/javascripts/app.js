@@ -23,10 +23,26 @@ define(['angular',
                             controller: userCtrl
                         }).
                         when('/admin/products', {
+                            templateUrl: 'products.html',
+                            controller: productsCtrl
+                        }).
+                        when('/admin/products/new', {
+                            templateUrl: 'test.html',
+                            controller: testCtrl
+                        }).
+                        when('/admin/products/:productId/edit', {
                             templateUrl: 'test.html',
                             controller: testCtrl
                         }).
                         when('/admin/shops', {
+                            templateUrl: 'shops.html',
+                            controller: shopsCtrl
+                        }).
+                        when('/admin/shops/new', {
+                            templateUrl: 'test.html',
+                            controller: testCtrl
+                        }).
+                        when('/admin/shops/:shopId/edit', {
                             templateUrl: 'test.html',
                             controller: testCtrl
                         }).

@@ -15,3 +15,7 @@
  *= require bootstrap-responsive.min
  *= require angular-ui.min
 */
+td.product_name {max-width: 250px; word-wrap:break-word;}
+td.barcode {width: 150px;}
+td.shop_name {max-width: 200px; word-wrap:break-word;}
+td.shop_address {max-width: 200px; word-wrap:break-word;}

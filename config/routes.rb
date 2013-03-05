@@ -14,6 +14,7 @@ ServerShopdiscovery::Application.routes.draw do
       delete "/logout" => "devise/sessions#destroy"
     end
     match '/admin/users/upload' => 'admin/users#upload', :via => :post
+    match '/admin/products/categories' => 'admin/products#categories', :via => :get
     match '/admin/(*foo)', :to => 'admin/home#index', :constraints => OnlyNonAjaxRequest.new
     namespace :admin do
       resources :home

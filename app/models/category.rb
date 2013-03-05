@@ -5,6 +5,22 @@ class Category < ActiveRecord::Base
 
   before_save :update_sequence
 
+  def self.categories_tree(category = nil)
+    _tree = []
+    _categories = if category
+      category.children
+    else
+      self.where{(parent_id == nil) | (parent_id == '')}
+    end
+    _categories.each do |cat|
+      cat_json = cat.as_json(:only => [:id, :name])
+      cat_json[:children] = self.categories_tree(cat)
+      cat_json[:hasChild] = true if cat_json[:children].length > 0
+      _tree << cat_json
+    end
+    _tree
+  end
+
   def has_children?
     children.count > 0
   end

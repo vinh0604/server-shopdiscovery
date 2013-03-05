@@ -53,6 +53,9 @@ function usersCtrl ($scope, $http, $window, $location) {
             $scope.totalPage = json.total_pages;
         });
     };
+    $scope.doEdit = function () {
+        $location.path('/admin/users/'+this.user.id+'/edit');
+    };
 
     $scope.$watch('checkAll',function ($event) {
         $window._($scope.usersData).each( function(user) {
@@ -150,8 +153,13 @@ function userCtrl ($scope, $routeParams, $http, $location, $window, GENDER_DATA,
     $scope.loadData = function () {
         if (!$scope.isNew) {
             $http.get('/admin/users/' + $routeParams.userId).success(function (json) {
-                if (json.user && json.user.contact && json.user.contact.birthdate) {
-                    json.user.contact.birthdate = $window.moment(json.user.contact.birthdate)._d;
+                if (json.user && json.user.contact) {
+                    if (json.user.contact.gender) {
+                        json.user.contact.gender = json.user.contact.gender.toString();
+                    }
+                    if (json.user.contact.birthdate) {
+                        json.user.contact.birthdate = $window.moment(json.user.contact.birthdate)._d;
+                    }
                 }
                 $scope.originalUser = json.user;
                 $scope.user = angular.copy($scope.originalUser);
@@ -171,6 +179,140 @@ function userCtrl ($scope, $routeParams, $http, $location, $window, GENDER_DATA,
     function successHandler () {
         $location.path('/admin/users/' + json.user.id + '/edit');
     }
+}
+
+function productsCtrl ($scope, $http, $window, $location, sharedCategories) {
+    $scope._ = $window._;
+    $scope.currentPage = 0;
+    $scope.totalPage = 0;
+    $scope.lowerPage = 0;
+    $scope.upperPage = 0;
+    $scope.productsData = [];
+    $scope.checkAll = false;
+    $scope.keyword = '';
+    $scope.category_id = '';
+    $scope.$location = $location;
+    $scope.categories = [{id: '', name: 'All'}];
+    $scope.currentCategory = {id: '', name: 'All'};
+
+    $scope.prevPage = function () {
+        if ($scope.currentPage > 0) {
+            $scope.currentPage--;
+        }
+    };
+    $scope.nextPage = function () {
+        if ($scope.currentPage < $scope.totalPage - 1) {
+            $scope.currentPage++;
+        }
+    };
+    $scope.setPage = function (page) {
+        if ($window._(page).isUndefined()) {
+            $scope.currentPage = this.n;
+        } else {
+            $scope.currentPage = page;
+        }
+    };
+    $scope.doSearch = function () {
+        $http.get('/admin/products', {params: {keyword: $scope.keyword, category_id: $scope.category_id, page: $scope.currentPage + 1, per_page: 15}}).success(function (json) {
+            $scope.productsData = $window._(json.products).pluck('product');
+            if ($scope.currentPage > json.total_pages - 1) {
+                $scope.currentPage = 0;
+            }
+            $scope.totalPage = json.total_pages;
+        });
+    };
+    $scope.doEdit = function () {
+        $location.path('/admin/products/'+this.product.id+'/edit');
+    };
+    $scope.doChangeCategory = function (evt) {
+        if (this.category.hasChild) {
+            evt.stopPropagation();
+        } else {
+            $scope.category_id = this.category.id;
+            $scope.currentCategory = this.category;
+        }
+    };
+
+    $scope.$watch('checkAll',function ($event) {
+        $window._($scope.productsData).each( function(product) {
+            product.checked = $scope.checkAll;
+        });
+    });
+    $scope.$watch('currentPage + totalPage', function() {
+        $scope.lowerPage = ($scope.currentPage > 2) ? ($scope.currentPage - 2) : 0;
+        $scope.upperPage = ($scope.currentPage < $scope.totalPage - 3) ? ($scope.currentPage + 2) : ($scope.totalPage - 1);
+    });
+    $scope.$watch('currentPage + category_id', function() {
+        $scope.checkAll = false;
+        $scope.doSearch();
+    });
+
+    if (!sharedCategories.get()) {
+        $http.get('/admin/products/categories').success(function (json) {
+            sharedCategories.set(json);
+            $scope.categories = $scope.categories.concat(sharedCategories.get());
+        });
+    } else {
+        $scope.categories = $scope.categories.concat(sharedCategories.get());
+    }
+    $scope.doSearch();
+}
+
+function shopsCtrl ($scope, $http, $window, $location) {
+    $scope._ = $window._;
+    $scope.currentPage = 0;
+    $scope.totalPage = 0;
+    $scope.lowerPage = 0;
+    $scope.upperPage = 0;
+    $scope.shopsData = [];
+    $scope.checkAll = false;
+    $scope.keyword = '';
+    $scope.$location = $location;
+
+    $scope.prevPage = function () {
+        if ($scope.currentPage > 0) {
+            $scope.currentPage--;
+        }
+    };
+    $scope.nextPage = function () {
+        if ($scope.currentPage < $scope.totalPage - 1) {
+            $scope.currentPage++;
+        }
+    };
+    $scope.setPage = function (page) {
+        if ($window._(page).isUndefined()) {
+            $scope.currentPage = this.n;
+        } else {
+            $scope.currentPage = page;
+        }
+    };
+    $scope.doSearch = function () {
+        $http.get('/admin/shops', {params: {keyword: $scope.keyword, page: $scope.currentPage + 1, per_page: 15}}).success(function (json) {
+            $scope.shopsData = $window._(json.shops).pluck('shop');
+            if ($scope.currentPage > json.total_pages - 1) {
+                $scope.currentPage = 0;
+            }
+            $scope.totalPage = json.total_pages;
+        });
+    };
+    $scope.doEdit = function () {
+        $location.path('/admin/shops/'+this.shop.id+'/edit');
+    };
+
+    $scope.$watch('checkAll',function ($event) {
+        $window._($scope.shopsData).each( function(shop) {
+            shop.checked = $scope.checkAll;
+        });
+    });
+    $scope.$watch('currentPage + totalPage', function() {
+        $scope.lowerPage = ($scope.currentPage > 2) ? ($scope.currentPage - 2) : 0;
+        $scope.upperPage = ($scope.currentPage < $scope.totalPage - 3) ? ($scope.currentPage + 2) : ($scope.totalPage - 1);
+    });
+    $scope.$watch('currentPage', function() {
+        $scope.checkAll = false;
+        $scope.doSearch();
+    });
+    $scope.doSearch();
 }
 
 function testCtrl ($scope, $location) {
