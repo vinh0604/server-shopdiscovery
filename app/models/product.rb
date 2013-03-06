@@ -36,6 +36,6 @@ class Product < ActiveRecord::Base
     end
     category_name = _category ? _category.name : ''
     tag_value = self.tags.select("array_to_string(array_agg(tags.value), ' ') as tag_value").first.tag_value
-    Product.update_all "textsearchable = to_tsvector(coalesce(replace('#{self.name}','-',' '),'') || ' ' || coalesce('#{category_name}','') || ' ' || coalesce('#{tag_value}',''))", "id = #{self.id}"
+    Product.update_all "textsearchable = to_tsvector('product',coalesce(replace('#{self.name}','-',' '),'') || ' ' || coalesce('#{category_name}','') || ' ' || coalesce('#{tag_value}',''))", "id = #{self.id}"
   end
 end

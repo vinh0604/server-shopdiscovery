@@ -20,7 +20,11 @@ require.config({
         "jquery-ui": "jquery-ui-1.9.2.custom.min",
         "angular-ui": "angular-ui.min",
         "moment": "moment.min",
-        "accounting": "accounting.min"
+        "accounting": "accounting.min",
+        "bootbox": "bootbox.min",
+        "ui-bootstrap": "ui-bootstrap-tpls-0.2.0.min",
+        "angular-sanitize": "angular-sanitize.min",
+        "tinymce": "tiny_mce/tiny_mce"
     },
     shim: {
         'angular': {
@@ -29,10 +33,14 @@ require.config({
         },
         "bootstrap": ["jquery"],
         "jquery-ui": ["jquery"],
-        "angular-ui": ["angular", "jquery-ui", "bootstrap"]
+        "angular-ui": ["angular", "jquery-ui", "bootstrap"],
+        "ui-bootstrap": ["angular", "bootstrap"],
+        "angular-sanitize": ["angular"],
+        "tiny_mce/jquery.tinymce": ["jquery"],
+        "tinymce": ["tiny_mce/jquery.tinymce"]
     }
 });
 
-require(['lodash','jquery','angular','app','bootstrap','jquery-ui','moment','accounting'], function (_,$,angular,core) {
+require(['lodash','jquery','angular','app','bootstrap','jquery-ui','moment','accounting','bootbox',"tinymce"], function (_,$,angular,core) {
     angular.bootstrap(document,['app']);
 });

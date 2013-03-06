@@ -11,4 +11,29 @@ class Admin::ShopsController < Admin::BaseController
       @shops = query.page(1)
     end
   end
+
+  def show
+    @shop = Shop.includes(:managers => :user).find(params[:id])
+  end
+
+  def create
+    @shop = Shop.new(params[:shop])
+    if @shop.save
+      Manager.update_shop_managers(@shop,params[:managers]) unless params[:managers].blank?
+      render :show
+    else
+      render :nothing => true, :status => 500
+    end
+  end
+
+  def update
+    @shop = Shop.find(params[:id])
+    @shop.update_attributes(params[:shop])
+    if @shop.save
+      Manager.update_shop_managers(@shop,params[:managers]) unless params[:managers].blank?
+      render :show
+    else
+      render :nothing => true, :status => 500
+    end
+  end
 end

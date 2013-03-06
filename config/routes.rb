@@ -15,6 +15,8 @@ ServerShopdiscovery::Application.routes.draw do
     end
     match '/admin/users/upload' => 'admin/users#upload', :via => :post
     match '/admin/products/categories' => 'admin/products#categories', :via => :get
+    match '/admin/suggestions/tags' => 'admin/suggestions#tags', :via => :get
+    match '/admin/suggestions/users' => 'admin/suggestions#users', :via => :get
     match '/admin/(*foo)', :to => 'admin/home#index', :constraints => OnlyNonAjaxRequest.new
     namespace :admin do
       resources :home

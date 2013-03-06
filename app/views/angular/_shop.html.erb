@@ -1,0 +1,107 @@
+<div class="well">
+  <form novalidate class="form-horizontal">
+    <legend ng-bind="{true: 'New Shop', false: 'Edit Shop'}[isNew]">New Shop</legend>
+    <div class="control-group">
+      <!-- Shop Name -->
+      <label class="control-label" for="name">Shop Name</label>
+      <div class="controls">
+        <input type="text" id="name" name="name" ng-model='shop.name' class="input-xlarge">
+      </div>
+    </div>
+    <div class="control-group">
+      <!-- Description -->
+      <label class="control-label" for="description">Description</label>
+      <div class="controls">
+        <textarea ui-tinymce id="description" name="description" ng-model='shop.description' class="input-xlarge"></textarea>
+      </div>
+    </div>
+    <div class="control-group">
+      <!-- Website -->
+      <label class="control-label" for="website">Website</label>
+      <div class="controls">
+        <input type="text" id="website" name="website" ng-model='shop.website' class="input-xlarge">
+      </div>
+    </div>
+    <div class="control-group">
+      <!-- Phone Numbers -->
+      <label class="control-label" for="shop_phones">Phone Numbers</label>
+      <div class="controls">
+        <p ng-show="shop.phones.length > 0"><span class="alert-info tag" ng-repeat="phone in shop.phones">{{phone}} <a href="#" class="remover" ng-click="doRemovePhone()">x</a></span></p>
+        <div class="input-append">
+          <input type="text" id="shop_phones" placeholder='Phone Number' ng-model='currentPhone' ui-keypress="{'enter':'doAddPhone();'}"><button class="btn btn-success" ng-click='doAddPhone()'>Add</button>
+        </div>
+      </div>
+    </div>
+    <div class="control-group">
+      <!-- Address -->
+      <label class="control-label" for="street_address">Address</label>
+      <div class="controls">
+        <textarea id="street_address" name="street_address" ng-model='shop.street_address' class="input-xlarge"></textarea>
+      </div>
+    </div>
+    <div class="control-group">
+      <!-- District -->
+      <label class="control-label">District</label>
+      <div class="controls">
+        <select name="district" id="district" ng-options="i.district as i.district for i in districtData" ng-model="shop.district" class="input-xlarge">
+          <option value="">--Select District--</option>
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <!-- City -->
+      <label class="control-label">City</label>
+      <div class="controls">
+        <select name="city" id="city" ng-options="i.city as i.city for i in cityData" ng-model="shop.city" ng-change="doChangeDistrictOptions()" class="input-xlarge">
+          <option value="">--Select City--</option>
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <!-- Managers -->
+      <label class="control-label">Shop Managers</label>
+      <div class="controls">
+        <a class="btn input-xlarge" ng-click="openDetail()">View & Edit Shop Managers</a>
+        <div modal="detailOpened" close="closeDetail()" options="opts">
+          <div class="modal-header">
+            <button type="button" class="close" ng-click="closeDetail()">×</button>
+            <h3>Shop Managers</h3>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped table-condensed table-hover">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Full Name</th>
+                  <th>Action</th>                                           
+                </tr>
+                <tbody>
+                  <tr ng-repeat='manager in shop.managers'> 
+                    <td>{{manager.username}}</td>
+                    <td>{{manager.email}}</td>
+                    <td>{{manager.contact.full_name}}</td>
+                    <td class="specification_action"><button class="btn btn-mini btn-danger" type="button" ng-click="doDeleteManager()"><i class="icon-trash icon-white"></i> Delete</button></td>
+                  </tr>
+                </tbody>
+              </thead>
+            </table>
+            <legend>New Manager</legend>
+            <input type="text" id="product_tags" placeholder='Username' ng-model='currentManager.username' bs-typeahead="doGetUserSuggestions">
+            <label for="shop_owner"><input type="checkbox" ng-model="currentManager.owner" id="shop_owner"> <span class="shop_owner">Owner</span></label>
+            <button class="btn btn-success" ng-click="doAddManager()" style="margin-top: 10px;">Add</button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn" ng-click="closeDetail()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <button class="btn btn-primary" ng-bind="{true: 'Create', false: 'Update'}[isNew]" ng-click="submit()">Create</button>
+        <button class="btn btn-danger offset1" ng-click="reset()">Reset</button>
+      </div>
+    </div>
+  </form>
+</div>

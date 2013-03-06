@@ -1,13 +1,16 @@
 define(['angular',
     // Angular UI
     'angular-ui',
+    // Angular UI Bootstrap
+    'ui-bootstrap',
     // Application Files
     'angular-app/services/services',
     'angular-app/widgets/widgets',
     'angular-app/filters/filters',
-    'angular-app/controllers/controllers'
-], function (angular, ui, services, widgets, filters, controllers) {
-    return angular.module('app',['ui', 'app.filters','app.services','app.widgets']).
+    'angular-app/controllers/controllers',
+    'angular-sanitize'
+], function (angular, ui, ui_bootstrap, services, widgets, filters, controllers) {
+    return angular.module('app',['ui', 'ui.bootstrap', 'app.filters','app.services','app.widgets','ngSanitize']).
                     config(['$routeProvider', '$locationProvider', '$httpProvider',
                     function ($routeProvider,  $locationProvider, $httpProvider) {
                         $routeProvider.when('/admin/users', {
@@ -27,29 +30,34 @@ define(['angular',
                             controller: productsCtrl
                         }).
                         when('/admin/products/new', {
-                            templateUrl: 'test.html',
-                            controller: testCtrl
+                            templateUrl: 'product.html',
+                            controller: productCtrl
                         }).
                         when('/admin/products/:productId/edit', {
-                            templateUrl: 'test.html',
-                            controller: testCtrl
+                            templateUrl: 'product.html',
+                            controller: productCtrl
                         }).
                         when('/admin/shops', {
                             templateUrl: 'shops.html',
                             controller: shopsCtrl
                         }).
                         when('/admin/shops/new', {
-                            templateUrl: 'test.html',
-                            controller: testCtrl
+                            templateUrl: 'shop.html',
+                            controller: shopCtrl
                         }).
                         when('/admin/shops/:shopId/edit', {
-                            templateUrl: 'test.html',
-                            controller: testCtrl
+                            templateUrl: 'shop.html',
+                            controller: shopCtrl
                         }).
                         otherwise({redirectTo: '/admin/users'});
 
                         $locationProvider.html5Mode(true);
 
                         $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name="csrf-token"]').attr('content');
-                    }]);
+                    }]).value('ui.config', {
+                        tinymce: {
+                            theme: 'simple',
+                            width : "285"
+                        }
+                    });
 });

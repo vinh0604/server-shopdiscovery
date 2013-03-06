@@ -13,6 +13,31 @@ class Admin::ProductsController < Admin::BaseController
     end
   end
 
+  def show
+    @product = Product.find(params[:id])
+  end
+
+  def create
+    @product = Product.new(params[:product])
+    @product.tags = Tag.create_tags(params[:tags]) unless params[:tags].blank?
+    if @product.save
+      render :show
+    else
+      render :nothing => true, :status => 500
+    end
+  end
+
+  def update
+    @product = Product.find(params[:id])
+    @product.assign_attributes(params[:product])
+    @product.tags = Tag.create_tags(params[:tags]) unless params[:tags].blank?
+    if @product.save
+      render :show
+    else
+      render :nothing => true, :status => 500
+    end
+  end
+
   def categories
     categories_tree = Category.categories_tree
     render :json => categories_tree
