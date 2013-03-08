@@ -25,4 +25,5 @@ td.specification_action {width: 65px;}
 .remover:hover, .remover:focus {color: #000000;text-decoration: underline;cursor: pointer;opacity: 0.4;filter: alpha(opacity=40);}
 span.shop_owner {margin-top: 4px; display: inline-table;}
 body .modal-manager {width: 800px; margin-left: -400px;}
+span.error {color: red;font-style:italic;}
 /*.modal .modal-body {max-height: 420px;overflow-y: auto;}*/

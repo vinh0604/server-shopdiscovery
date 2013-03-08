@@ -16,6 +16,7 @@
 
 # Ignore uploads folder
 /public/uploads/*
+/public/uploads.zip
 
 # Ignore RubyMine config folder
 /.idea

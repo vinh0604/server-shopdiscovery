@@ -145,9 +145,9 @@ function userCtrl ($scope, $routeParams, $http, $location, $window, GENDER_DATA,
             contact: _($scope.user.contact).omit('full_name')
         };
         if ($scope.isNew) {
-            $http.post('/admin/users', params).success(successHandler);
+            $http.post('/admin/users', params).success(successHandler).error(errorHandler);
         } else {
-            $http.put('/admin/users/' + $routeParams.userId, params).success(successHandler);
+            $http.put('/admin/users/' + $routeParams.userId, params).success(successHandler).error(errorHandler);
         }
     };
     $scope.loadData = function () {
@@ -177,7 +177,19 @@ function userCtrl ($scope, $routeParams, $http, $location, $window, GENDER_DATA,
         }
     }
     function successHandler (json) {
+        var message = "The user is successfully updated!";
+        if ($scope.isNew) {
+            message = "The user is successfully created!";
+        }
+        $window.bootbox.alert(message);
         $location.path('/admin/users/' + json.user.id + '/edit');
+    }
+    function errorHandler (json, status) {
+        var message = "Sorry. Can not update the user!";
+        if ($scope.isNew) {
+            message = "Sorry. Can not create the user!";
+        }
+        $window.bootbox.alert(message);
     }
 }
 
@@ -279,9 +291,9 @@ function productCtrl ($scope, $routeParams, $http, $window, $location, sharedCat
             params.product.category_id = $scope.product.category.id;
         }
         if ($scope.isNew) {
-            $http.post('/admin/products', params).success(successHandler);
+            $http.post('/admin/products', params).success(successHandler).error(errorHandler);
         } else {
-            $http.put('/admin/products/' + $routeParams.productId, params).success(successHandler);
+            $http.put('/admin/products/' + $routeParams.productId, params).success(successHandler).error(errorHandler);
         }
     };
     $scope.loadData = function () {
@@ -346,7 +358,20 @@ function productCtrl ($scope, $routeParams, $http, $window, $location, sharedCat
     $scope.loadData();
 
     function successHandler (json) {
+        var message = "The product is successfully updated!";
+        if ($scope.isNew) {
+            message = "The product is successfully created!";
+        }
+        $window.bootbox.alert(message);
         $location.path('/admin/products/' + json.product.id + '/edit');
+    }
+
+    function errorHandler (json, status) {
+        var message = "Sorry. Can not update the product!";
+        if ($scope.isNew) {
+            message = "Sorry. Can not create the product!";
+        }
+        $window.bootbox.alert(message);
     }
 }
 
@@ -432,9 +457,9 @@ function shopCtrl ($scope, $routeParams, $http, $window, $location, REGION_DATA)
             })
         };
         if ($scope.isNew) {
-            $http.post('/admin/shops', params).success(successHandler);
+            $http.post('/admin/shops', params).success(successHandler).error(errorHandler);
         } else {
-            $http.put('/admin/shops/' + $routeParams.shopId, params).success(successHandler);
+            $http.put('/admin/shops/' + $routeParams.shopId, params).success(successHandler).error(errorHandler);
         }
     };
     $scope.loadData = function () {
@@ -522,7 +547,20 @@ function shopCtrl ($scope, $routeParams, $http, $window, $location, REGION_DATA)
     $scope.loadData();
 
     function successHandler (json) {
+        var message = "The shop is successfully updated!";
+        if ($scope.isNew) {
+            message = "The shop is successfully created!";
+        }
+        $window.bootbox.alert(message);
         $location.path('/admin/shops/' + json.shop.id + '/edit');
+    }
+
+    function errorHandler (json, status) {
+        var message = "Sorry. Can not update the shop!";
+        if ($scope.isNew) {
+            message = "Sorry. Can not create the shop!";
+        }
+        $window.bootbox.alert(message);
     }
 }
 

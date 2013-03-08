@@ -35,6 +35,7 @@ require.config({
         "jquery-ui": ["jquery"],
         "angular-ui": ["angular", "jquery-ui", "bootstrap"],
         "ui-bootstrap": ["angular", "bootstrap"],
+        "bootbox": ["jquery","bootstrap"],
         "angular-sanitize": ["angular"],
         "tiny_mce/jquery.tinymce": ["jquery"],
         "tinymce": ["tiny_mce/jquery.tinymce"]

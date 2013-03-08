@@ -1,11 +1,12 @@
 <div class="well">
-  <form novalidate class="form-horizontal">
+  <form novalidate class="form-horizontal" name="shopForm">
     <legend ng-bind="{true: 'New Shop', false: 'Edit Shop'}[isNew]">New Shop</legend>
     <div class="control-group">
       <!-- Shop Name -->
       <label class="control-label" for="name">Shop Name</label>
       <div class="controls">
-        <input type="text" id="name" name="name" ng-model='shop.name' class="input-xlarge">
+        <input type="text" id="name" name="name" ng-model='shop.name' class="input-xlarge" required>
+        <span class="error" ng-show="shopForm.name.$error.required">Shop Name must be provided.</span>
       </div>
     </div>
     <div class="control-group">
@@ -19,7 +20,8 @@
       <!-- Website -->
       <label class="control-label" for="website">Website</label>
       <div class="controls">
-        <input type="text" id="website" name="website" ng-model='shop.website' class="input-xlarge">
+        <input type="url" id="website" name="website" ng-model='shop.website' class="input-xlarge">
+        <span class="error" ng-show="shopForm.website.$error.url">Website is not valid.</span>
       </div>
     </div>
     <div class="control-group">

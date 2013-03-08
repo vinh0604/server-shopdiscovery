@@ -1,18 +1,20 @@
 <div class="well">
-  <form novalidate class="form-horizontal">
+  <form novalidate class="form-horizontal" name="productForm">
     <legend ng-bind="{true: 'New Product', false: 'Edit Product'}[isNew]">New Product</legend>
     <div class="control-group">
       <!-- Product Name -->
       <label class="control-label" for="name">Product Name</label>
       <div class="controls">
-        <input type="text" id="name" name="name" ng-model='product.name' class="input-xlarge">
+        <input type="text" id="name" name="name" ng-model='product.name' class="input-xlarge" required>
+        <span class="error" ng-show="productForm.name.$error.required">Product Name must be provided.</span>
       </div>
     </div>
     <div class="control-group">
       <!-- Product EAN -->
       <label class="control-label" for="barcode">Product EAN</label>
       <div class="controls">
-        <input type="text" id="barcode" name="barcode" ng-model='product.barcode' class="input-xlarge">
+        <input type="text" id="barcode" name="barcode" ng-model='product.barcode' class="input-xlarge" ean-number>
+        <span class="error" ng-show="productForm.barcode.$error.ean">Product EAN must have 13 digits.</span>
       </div>
     </div>
     <div class="control-group">
@@ -23,6 +25,8 @@
           <a class="btn dropdown-toggle" href="#" data-toggle="dropdown"><span ng-bind="product.category.name || 'Select Category'">Select Category</span> <b class="caret"></b></a>
           <ul class="dropdown-menu" ng-include="'partialCategoryMenu.html'"></ul>
         </div>
+        <input type="text" id="category" name="category" ng-model='product.category.id' class="input-xlarge" required ng-show='false'>
+        <span class="error" ng-show="productForm.category.$error.required">Category must be provided.</span>
       </div>
     </div>
     <div class="control-group">
@@ -72,7 +76,7 @@
     </div>
     <div class="control-group">
       <div class="controls">
-        <button class="btn btn-primary" ng-bind="{true: 'Create', false: 'Update'}[isNew]" ng-click="submit()">Create</button>
+        <button class="btn btn-primary" ng-bind="{true: 'Create', false: 'Update'}[isNew]" ng-click="submit()" ng-disabled="productForm.$invalid">Create</button>
         <button class="btn btn-danger offset1" ng-click="reset()">Reset</button>
       </div>
     </div>

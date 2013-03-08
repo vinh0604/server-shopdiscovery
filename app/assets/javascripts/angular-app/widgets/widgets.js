@@ -1,5 +1,8 @@
 define(['angular'], function (angular) {
-    return angular.module('app.widgets', []).directive('bsTypeahead', ['$parse', function($parse) {
+    var widgets = angular.module('app.widgets', []);
+    var NUMBER_SERIAL_REGEX = /^[\d\s]*$/;
+    var EAN_REGEX = /^\d{13}$/;
+    widgets.directive('bsTypeahead', ['$parse', function($parse) {
         'use strict';
 
         return {
@@ -59,4 +62,59 @@ define(['angular'], function (angular) {
             }
         };
     }]);
+    widgets.directive('numberSerial', function(){
+        'use strict';
+
+        return {
+            require: '?ngModel',
+            link: function(scope, elm, attrs, ctrl) {
+                ctrl.$parsers.unshift(function(viewValue) {
+                    if (!viewValue || NUMBER_SERIAL_REGEX.test(viewValue)) {
+                        ctrl.$setValidity('numberSerial', true);
+                        return viewValue;
+                    } else {
+                        ctrl.$setValidity('numberSerial', false);
+                        return viewValue;
+                    }
+                });
+            }
+        };
+    });
+    widgets.directive('validPassword', function(){
+        'use strict';
+
+        return {
+            require: '?ngModel',
+            link: function(scope, elm, attrs, ctrl) {
+                ctrl.$parsers.unshift(function(viewValue) {
+                    if (!viewValue || (viewValue && viewValue.length >= 6)) {
+                        ctrl.$setValidity('validPassword', true);
+                        return viewValue;
+                    } else {
+                        ctrl.$setValidity('validPassword', false);
+                        return viewValue;
+                    }
+                });
+            }
+        };
+    });
+    widgets.directive('eanNumber', function(){
+        'use strict';
+
+        return {
+            require: '?ngModel',
+            link: function(scope, elm, attrs, ctrl) {
+                ctrl.$parsers.unshift(function(viewValue) {
+                    if (!viewValue || EAN_REGEX.test(viewValue)) {
+                        ctrl.$setValidity('ean', true);
+                        return viewValue;
+                    } else {
+                        ctrl.$setValidity('ean', false);
+                        return viewValue;
+                    }
+                });
+            }
+        };
+    });
+    return widgets;
 });
